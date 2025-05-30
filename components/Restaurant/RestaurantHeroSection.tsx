@@ -56,7 +56,7 @@ export default function RestaurantHeroSection() {
             })}
           >
             Ресторан <br />
-            «В.О.Л.Я.»
+            «В[/\]Я»
           </h1>
         </Container>
       </div>

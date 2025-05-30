@@ -1,4 +1,4 @@
-// пост запрос на отправку данных из формы в бд таблица бронирования 
+// пост запрос на отправку данных из формы в бд таблица бронироввания 
 import { NextResponse } from "next/server";
 import { parseISO } from "date-fns";
 
@@ -53,7 +53,7 @@ export async function POST(req: Request) {
   } catch (e) {
     console.error("API Error:", e);
 
-    // Более детальная информация об ошибке
+    
     if (e instanceof Error) {
       return NextResponse.json(
         {
