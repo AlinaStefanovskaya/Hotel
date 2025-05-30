@@ -1,4 +1,4 @@
-// app/api/book-room/route.ts
+// пост запрос на отправку данных из формы в бд таблица бронирования 
 import { NextResponse } from "next/server";
 import { parseISO } from "date-fns";
 
