@@ -9,10 +9,12 @@ import {
   Button,
 } from "@heroui/react";
 import { CalendarDateTime, getLocalTimeZone } from "@internationalized/date";
-import { parseISO, format as fmt } from "date-fns";
+import { parseISO, format as fmt, differenceInCalendarDays } from "date-fns";
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { z } from "zod";
+
+import { calculateFinalPrice } from "@/lib/pricing";
 
 /* ── константи дорослі / діти ─────────────────────── */
 const ADULTS = [
@@ -96,14 +98,42 @@ export default function BookingForm() {
   const [err, setErr] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
 
+  /* ---------- автоматический пересчет цены при изменении дат или номера ---------- */
+  useEffect(() => {
+    // Проверяем что все нужные данные есть
+    if (!form.roomId || !form.checkIn || !form.checkOut || rooms.length === 0) {
+      return;
+    }
+
+    // Ищем комнату в списке
+    const found = rooms.find((r) => r.key === form.roomId);
+
+    if (!found || !found.price) {
+      return;
+    }
+
+    const checkInDate = form.checkIn.toDate(getLocalTimeZone());
+    const checkOutDate = form.checkOut.toDate(getLocalTimeZone());
+    const nights = Math.max(
+      1,
+      differenceInCalendarDays(checkOutDate, checkInDate)
+    );
+
+    const calculatedPrice = calculateFinalPrice(
+      found.price,
+      checkInDate,
+      checkOutDate,
+      nights
+    );
+
+    set((f) => ({ ...f, price: calculatedPrice }));
+  }, [form.roomId, form.checkIn, form.checkOut, rooms]);
+
   /* ---------- коли обираємо номер обновлюємо ціну (якщо є) ---------- */
   const handleRoomSelect = (id: string) => {
-    const found = rooms.find((r) => r.key === id);
-
     set((f) => ({
       ...f,
       roomId: id,
-      price: found?.price ?? f.price,
     }));
   };
 
@@ -188,6 +218,10 @@ export default function BookingForm() {
       />
 
       <DatePicker
+        classNames={{
+          calendar: "seasonal-calendar",
+        }}
+        description="Травень-вересень: високий сезон (+15%)"
         granularity="day"
         isInvalid={!!err.checkIn}
         label="Дата заїзду"
@@ -195,6 +229,10 @@ export default function BookingForm() {
         onChange={(v) => set((f) => ({ ...f, checkIn: v }))}
       />
       <DatePicker
+        classNames={{
+          calendar: "seasonal-calendar",
+        }}
+        description="Від 3 днів: знижка від 5%"
         granularity="day"
         isInvalid={!!err.checkOut}
         label="Дата виїзду"

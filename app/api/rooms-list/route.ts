@@ -1,4 +1,4 @@
-//запрос на получение всех номеров для нашей формы 
+//запрос на получение всех номеров для нашей формы
 import { NextResponse } from "next/server";
 import { createClient } from "next-sanity";
 
@@ -11,7 +11,7 @@ const sanity = createClient({
 
 export async function GET() {
   const rooms = await sanity.fetch(
-    `*[_type=="room"]{_id, room_name} | order(room_name asc)`
+    `*[_type=="room"]{_id, room_name, room_price} | order(room_name asc)`
   );
 
   return NextResponse.json({ rooms });
