@@ -2,11 +2,12 @@
 
 import {
   Input,
-  DatePicker,
   Select,
   SelectItem,
   Checkbox,
   Button,
+  RadioGroup,
+  Radio,
 } from "@heroui/react";
 import { CalendarDateTime, getLocalTimeZone } from "@internationalized/date";
 import { parseISO, format as fmt, differenceInCalendarDays } from "date-fns";
@@ -14,7 +15,9 @@ import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { z } from "zod";
 
+import CustomDatePicker from "@/components/CustomDatePicker";
 import { calculateFinalPrice } from "@/lib/pricing";
+import PaymentModal from "./PaymentModal";
 
 /* ── константи дорослі / діти ─────────────────────── */
 const ADULTS = [
@@ -30,7 +33,8 @@ const KIDS = [
 ];
 
 /* ── схема валідації ─────────────────────────────── */
-const phoneRe = /^\+?[0-9\s\-]{7,15}$/;
+// Формат: +38 (0XX) XXX-XX-XX або прості цифри
+const phoneRe = /^\+38 \(\d{3}\) \d{3}-\d{2}-\d{2}$|^\+?[0-9\s\-()]{10,20}$/;
 const schema = z.object({
   name: z.string().min(2),
   phone: z.string().regex(phoneRe, "Невірний номер"),
@@ -40,6 +44,9 @@ const schema = z.object({
   children: z.number().min(0),
   roomId: z.string().min(1, "Оберіть номер"),
   price: z.number().positive(),
+  paymentType: z.enum(["cash", "online"], {
+    errorMap: () => ({ message: "Оберіть тип оплати" }),
+  }),
   agree: z.literal(true, {
     errorMap: () => ({ message: "Погодьтесь з умовами" }),
   }),
@@ -92,11 +99,16 @@ export default function BookingForm() {
     children: search.get("children") ?? "0",
     roomId: search.get("room") ?? "",
     price: Number(search.get("price") ?? 0),
+    paymentType: "cash" as "cash" | "online",
     agree: false,
   });
 
   const [err, setErr] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState<"unpaid" | "paid">(
+    "unpaid"
+  );
 
   /* ---------- автоматический пересчет цены при изменении дат или номера ---------- */
   useEffect(() => {
@@ -158,30 +170,54 @@ export default function BookingForm() {
       return;
     }
     setErr({});
+
+    // Якщо онлайн оплата - показуємо модалку
+    if (form.paymentType === "online") {
+      setShowPaymentModal(true);
+      return;
+    }
+
+    // Для готівки статус завжди unpaid
+    setPaymentStatus("unpaid");
+    await sendBooking(v.data, "unpaid");
+  };
+
+  /* ---------- відправка бронювання ---------- */
+  const sendBooking = async (data: any, paymentStat: "unpaid" | "paid") => {
     setBusy(true);
+
+    const payload = {
+      roomId: form.roomId,
+      from: data.checkIn.toISOString(),
+      to: data.checkOut.toISOString(),
+      payload: {
+        user_name: form.name,
+        user_phone: form.phone,
+        rent_from: fmt(data.checkIn, "yyyy-MM-dd"),
+        rent_to: fmt(data.checkOut, "yyyy-MM-dd"),
+        rent_price: form.price,
+        people_count: data.adults,
+        child_count: data.children,
+        payment_type: form.paymentType,
+        payment_status: paymentStat,
+      },
+    };
+
+    console.log("📤 Відправляємо дані:", payload);
 
     /* — відправляємо на свій API-route /api/book-room — */
     const res = await fetch("/api/book-room", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        roomId: form.roomId,
-        from: fmt(v.data.checkIn, "yyyy-MM-dd"),
-        to: fmt(v.data.checkOut, "yyyy-MM-dd"),
-        payload: {
-          user_name: form.name,
-          user_phone: form.phone,
-          rent_from: fmt(v.data.checkIn, "yyyy-MM-dd"),
-          rent_to: fmt(v.data.checkOut, "yyyy-MM-dd"),
-          rent_price: form.price,
-          people_count: v.data.adults,
-          child_count: v.data.children,
-        },
-      }),
+      body: JSON.stringify(payload),
     });
     const json = await res.json();
 
     if (!res.ok) {
+      console.error("❌ Помилка API:", json);
+      if (json.details) {
+        console.error("🔴 Деталі помилок:", json.details);
+      }
       setErr({ general: json.error ?? "Помилка бронювання" });
       setBusy(false);
 
@@ -214,26 +250,75 @@ export default function BookingForm() {
         label="Контактний номер"
         placeholder="+38 (0__) ___-__-__"
         value={form.phone}
-        onValueChange={(v) => set((f) => ({ ...f, phone: v }))}
+        onValueChange={(v) => {
+          // Маска для українського телефону: +38 (0XX) XXX-XX-XX
+          let cleaned = v.replace(/\D/g, ""); // тільки цифри
+
+          // Якщо починається з 38, залишаємо
+          if (cleaned.startsWith("38")) {
+            cleaned = cleaned;
+          } else if (cleaned.startsWith("0")) {
+            // Якщо починається з 0, додаємо 38
+            cleaned = "38" + cleaned;
+          } else if (cleaned.length > 0) {
+            // Інші цифри - додаємо 380
+            cleaned = "380" + cleaned;
+          }
+
+          // Обмежуємо 12 цифр (38 + 10 цифр)
+          if (cleaned.length > 12) {
+            cleaned = cleaned.slice(0, 12);
+          }
+
+          // Форматуємо: +38 (0XX) XXX-XX-XX
+          let formatted = "";
+          if (cleaned.length > 0) {
+            formatted = "+" + cleaned.slice(0, 2); // +38
+          }
+          if (cleaned.length > 2) {
+            formatted += " (" + cleaned.slice(2, 5); // +38 (0XX
+          }
+          if (cleaned.length > 5) {
+            formatted += ") " + cleaned.slice(5, 8); // +38 (0XX) XXX
+          }
+          if (cleaned.length > 8) {
+            formatted += "-" + cleaned.slice(8, 10); // +38 (0XX) XXX-XX
+          }
+          if (cleaned.length > 10) {
+            formatted += "-" + cleaned.slice(10, 12); // +38 (0XX) XXX-XX-XX
+          }
+
+          set((f) => ({ ...f, phone: formatted }));
+        }}
       />
 
-      <DatePicker
-        classNames={{
-          calendar: "seasonal-calendar",
-        }}
+      <CustomDatePicker
         description="Травень-вересень: високий сезон (+15%)"
-        granularity="day"
         isInvalid={!!err.checkIn}
         label="Дата заїзду"
         value={form.checkIn}
-        onChange={(v) => set((f) => ({ ...f, checkIn: v }))}
+        onChange={(v) =>
+          set((f) => {
+            // Якщо нова дата заїзду >= дати виїзду, скидаємо
+            if (v && f.checkOut) {
+              const checkInDate = new Date(v.year, v.month - 1, v.day);
+              const checkOutDate = new Date(
+                f.checkOut.year,
+                f.checkOut.month - 1,
+                f.checkOut.day
+              );
+
+              if (checkInDate >= checkOutDate) {
+                return { ...f, checkIn: v, checkOut: null };
+              }
+            }
+
+            return { ...f, checkIn: v };
+          })
+        }
       />
-      <DatePicker
-        classNames={{
-          calendar: "seasonal-calendar",
-        }}
+      <CustomDatePicker
         description="Від 3 днів: знижка від 5%"
-        granularity="day"
         isInvalid={!!err.checkOut}
         label="Дата виїзду"
         minValue={form.checkIn ?? undefined}
@@ -283,6 +368,17 @@ export default function BookingForm() {
         value={form.price ? String(form.price) : "—"}
       />
 
+      <RadioGroup
+        label="Тип оплати"
+        value={form.paymentType}
+        onValueChange={(v) =>
+          set((f) => ({ ...f, paymentType: v as "cash" | "online" }))
+        }
+      >
+        <Radio value="cash">Готівка (розрахунок на місці)</Radio>
+        <Radio value="online">Онлайн оплата</Radio>
+      </RadioGroup>
+
       <Checkbox
         isInvalid={!!err.agree}
         isSelected={form.agree}
@@ -296,6 +392,24 @@ export default function BookingForm() {
       <Button color="primary" isLoading={busy} onPress={submit}>
         Підтвердити бронювання
       </Button>
+
+      <PaymentModal
+        isOpen={showPaymentModal}
+        onClose={() => setShowPaymentModal(false)}
+        amount={form.price}
+        onPaymentComplete={async (isPaid) => {
+          const data = {
+            ...form,
+            adults: Number(form.adults),
+            children: Number(form.children),
+            checkIn: form.checkIn?.toDate(getLocalTimeZone()),
+            checkOut: form.checkOut?.toDate(getLocalTimeZone()),
+          };
+          const status = isPaid ? "paid" : "unpaid";
+          setPaymentStatus(status);
+          await sendBooking(data, status);
+        }}
+      />
     </div>
   );
 }
