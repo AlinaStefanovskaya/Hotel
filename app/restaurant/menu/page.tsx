@@ -50,7 +50,7 @@ export default function MenuPage() {
                 price: "250 грн",
               },
               {
-                title: "2",
+                title: "44",
                 imgLink: "",
                 desc: "",
                 price: "250 грн",
