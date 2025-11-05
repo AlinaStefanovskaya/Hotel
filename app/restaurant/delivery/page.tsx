@@ -1,7 +1,7 @@
 "use client";
 
 import Head from "next/head";
-
+import Link from "next/link";
 import Container from "@/components/Container";
 
 export default function RoomDeliveryPage() {
@@ -119,16 +119,40 @@ export default function RoomDeliveryPage() {
             {/* Заглушки меню */}
             <div className="grid gap-6 md:grid-cols-2">
               {[
-                { title: "Основне меню", icon: "ri-restaurant-line" },
-                { title: "Напої", icon: "ri-goblet-line" },
-                { title: "Десерти", icon: "ri-cake-3-line" },
-                { title: "Сніданки", icon: "ri-sun-line" },
+                {
+                  title: "Основне меню",
+                  icon: "ri-restaurant-line",
+                  menuLink:
+                    "https://ukrainski-stravy.com.ua/wp-content/uploads/2025/03/soups.pdf",
+                },
+                {
+                  title: "Напої",
+                  icon: "ri-goblet-line",
+                  menuLink:
+                    "https://ukrainski-stravy.com.ua/wp-content/uploads/2025/03/cold-drinks.pdf",
+                },
+                {
+                  title: "Десерти",
+                  icon: "ri-cake-3-line",
+                  menuLink:
+                    "https://ukrainski-stravy.com.ua/wp-content/uploads/2025/03/desserts-ice.pdf",
+                },
+                {
+                  title: "Сніданки",
+                  icon: "ri-sun-line",
+                  menuLink:
+                    "https://ukrainski-stravy.com.ua/wp-content/uploads/2025/03/breakfasts.pdf",
+                },
               ].map((category) => (
                 <div
                   key={category.title}
                   className="overflow-hidden rounded-lg border bg-white shadow-md"
                 >
-                  <div className="flex h-48 items-center justify-center bg-gray-100">
+                  <Link
+                    className="flex h-48 items-center justify-center bg-gray-100"
+                    href={category.menuLink}
+                    target="_blank"
+                  >
                     <div className="text-center">
                       <i
                         className={`${category.icon} mb-2 text-6xl text-gray-400`}
@@ -137,7 +161,7 @@ export default function RoomDeliveryPage() {
                         {category.title}
                       </p>
                     </div>
-                  </div>
+                  </Link>
                   <div className="p-4">
                     <p className="text-center text-sm text-gray-600">
                       Зателефонуйте для ознайомлення з повним меню
