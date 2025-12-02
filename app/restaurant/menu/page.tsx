@@ -44,8 +44,7 @@ export default function MenuPage() {
             {[
               {
                 title: "Деруни зі сметаною",
-                imgLink:
-                  "https://vibagliviyhlop.com.ua/wp-content/uploads/2023/02/%D0%94%D0%B5%D1%80%D1%83%D0%BD%D0%B8-%D0%B7-%D1%81%D0%BC%D0%B5%D1%82%D0%B0%D0%BD%D0%BE%D1%8E-1.jpg://images-ext-1.discordapp.net/external/6FCiTd9q3_vEeSPq-AGFqzx-JoyDIA3but6E5vAbtKU/https/today.uahttps://fommi-foods.com/images/stories/virtuemart/product/deruny-smetana.jpg/wp-content/uploads/2020/04/salo-1.jpg?format=webp&width=1280&height=960",
+                imgLink:"https://vibagliviyhlop.com.ua/wp-content/uploads/2023/02/%D0%94%D0%B5%D1%80%D1%83%D0%BD%D0%B8-%D0%B7-%D1%81%D0%BC%D0%B5%D1%82%D0%B0%D0%BD%D0%BE%D1%8E-1.jpg",
                 desc: "ПримТрадиційні деруни з тертої картоплі, обсмажені до золотистої скоринки та подані зі свіжою домашньою сметаною. Ситна страва з вираженим українським смаком, що ідеально підходить для теплого обіду",
                 price: "250 грн",
               },
@@ -85,7 +84,7 @@ export default function MenuPage() {
                 className="overflow-hidden rounded-lg border shadow-md"
               >
                 <div className="relative h-64 bg-gray-200">
-                  {/* Изображение */}
+                  
                   <div
                     className="flex h-full items-center justify-center bg-cover bg-center"
                     style={{ backgroundImage: `url(${item.imgLink})` }}
@@ -96,11 +95,11 @@ export default function MenuPage() {
                     {item.title}
                   </h3>
                   <p className="mb-3 text-sm text-gray-600">
-                    
+                    {item.desc}
                   </p>
                   <div className="flex items-center justify-between">
                     <span className="text-lg font-bold text-primary">
-                      
+                       {item.price}
                     </span>
                   </div>
                 </div>
