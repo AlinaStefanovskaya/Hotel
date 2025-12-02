@@ -45,12 +45,12 @@ export default function MenuPage() {
               {
                 title: "Деруни зі сметаною",
                 imgLink:
-                  "https://images-ext-1.discordapp.net/external/6FCiTd9q3_vEeSPq-AGFqzx-JoyDIA3but6E5vAbtKU/https/today.uahttps://fommi-foods.com/images/stories/virtuemart/product/deruny-smetana.jpg/wp-content/uploads/2020/04/salo-1.jpg?format=webp&width=1280&height=960",
-                desc: "ПримТрадиційні деруни з тертої картоплі, обсмажені до золотистої скоринки та подані зі свіжою домашньою сметаною. Ситна страва з вираженим українським смаком, що ідеально підходить для теплого обіду.ер описания",
+                  "https://vibagliviyhlop.com.ua/wp-content/uploads/2023/02/%D0%94%D0%B5%D1%80%D1%83%D0%BD%D0%B8-%D0%B7-%D1%81%D0%BC%D0%B5%D1%82%D0%B0%D0%BD%D0%BE%D1%8E-1.jpg://images-ext-1.discordapp.net/external/6FCiTd9q3_vEeSPq-AGFqzx-JoyDIA3but6E5vAbtKU/https/today.uahttps://fommi-foods.com/images/stories/virtuemart/product/deruny-smetana.jpg/wp-content/uploads/2020/04/salo-1.jpg?format=webp&width=1280&height=960",
+                desc: "ПримТрадиційні деруни з тертої картоплі, обсмажені до золотистої скоринки та подані зі свіжою домашньою сметаною. Ситна страва з вираженим українським смаком, що ідеально підходить для теплого обіду",
                 price: "250 грн",
               },
               {
-                title: "Бульйон курячий з перепелиними яйцями44",
+                title: "Бульйон курячий з перепелиними яйцями",
                 imgLink: "https://img.postershop.me/11876/Products/3204100_1683110436.3421_original.jpg",
                 desc: "Ніжний ароматний бульйон на основі домашньої курки, поданий із м’ясом, овочами та перепелиними яйцями. Легкий, поживний та зігріваючий суп, що смакує у будь-яку пору дня.",
                 price: "300 грн",
@@ -96,11 +96,11 @@ export default function MenuPage() {
                     {item.title}
                   </h3>
                   <p className="mb-3 text-sm text-gray-600">
-                    Опис страви буде доступний найближчим часом
+                    
                   </p>
                   <div className="flex items-center justify-between">
                     <span className="text-lg font-bold text-primary">
-                      від 250 грн
+                      
                     </span>
                   </div>
                 </div>
