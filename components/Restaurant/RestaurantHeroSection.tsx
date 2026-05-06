@@ -1,64 +1,45 @@
+// components/RestaurantNav.tsx
 "use client";
 
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/pagination";
-import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { UtensilsCrossed, BookOpen, CalendarDays, Truck } from "lucide-react";
 
-import Container from "@/components/Container";
-import imgObj from "@/public/images/utils";
-import { title } from "@/components/primitives";
-
-const slides = [
-  imgObj.restorant1,
-  imgObj.restorant2,
-  imgObj.restorant3,
-  imgObj.restorant4,
-  imgObj.restorant5,
+const TABS = [
+  { href: "/restaurant", label: "Огляд", icon: UtensilsCrossed },
+  { href: "/restaurant/menu", label: "Меню", icon: BookOpen },
+  { href: "/restaurant/booking", label: "Бронь столика", icon: CalendarDays },
+  { href: "/restaurant/delivery", label: "Доставка", icon: Truck },
 ];
 
-export default function RestaurantHeroSection() {
+export default function RestaurantNav() {
+  const pathname = usePathname();
+
   return (
-    <section className="w-full mt-[64px]">
-      <div className="relative h-[80vh] md:h-[70vh] w-full">
-        <Swiper
-          loop
-          autoplay={{ delay: 5000, disableOnInteraction: false }}
-          className="h-full"
-          modules={[Autoplay, Pagination]}
-          pagination={{ clickable: true }}
-        >
-          {slides.map((src) => (
-            <SwiperSlide key={src.src} className="relative w-full h-full">
-              <Image
-                fill
-                priority
-                alt="Ресторан В.О.Л.Я."
-                className="object-cover"
-                src={src}
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
+    <nav className="sticky top-20 z-30 border-b border-[#EFEAE0] bg-white/95 backdrop-blur-md">
+      <div className="max-w-[1320px] mx-auto px-6 md:px-16 flex gap-1 md:gap-2 overflow-x-auto">
+        {TABS.map(({ href, label, icon: Icon }) => {
+          const active = pathname === href;
 
-        {/* затемнення */}
-        <div className="absolute inset-0 bg-black/50" />
-
-        {/* заголовок поверх слайдів */}
-        <Container className="absolute inset-0 z-10 flex flex-col items-center justify-center h-full text-center gap-[35px] md:gap-[90px]">
-          <h1
-            className={title({
-              color: "yellow",
-              size: "xl",
-              fullWidth: true,
-            })}
-          >
-            Ресторан <br />
-            «В[/\]Я»
-          </h1>
-        </Container>
+          return (
+            <Link
+              key={href}
+              className={`relative flex items-center gap-2 px-4 md:px-6 py-5 text-[13px] whitespace-nowrap transition-colors ${
+                active
+                  ? "text-[#1A1A2E] font-medium"
+                  : "text-[#9090AA] hover:text-[#1A1A2E]"
+              }`}
+              href={href}
+            >
+              <Icon className="w-4 h-4" strokeWidth={1.5} />
+              {label}
+              {active && (
+                <span className="absolute bottom-0 left-3 right-3 h-px bg-[#C9A96E]" />
+              )}
+            </Link>
+          );
+        })}
       </div>
-    </section>
+    </nav>
   );
 }

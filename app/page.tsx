@@ -1,25 +1,24 @@
-"use client";
-
-import Head from "next/head";
+// app/page.tsx
+import type { Metadata } from "next";
 
 import HeroSection from "@/components/Home/HeroSection";
 import BookingSection from "@/components/Home/BookingSection";
-import InfoBlocks from "@/components/Home/InfoBlocks";
+import FeaturedRooms from "@/components/Home/FeaturedRooms";
+import SplitCTA from "@/components/Home/SplitCTA";
+
+export const metadata: Metadata = {
+  title: "Volya Boutique Hotel — преміум-готель в Аркадії, Одеса",
+  description:
+    "Камерний boutique-готель у самому серці Аркадії. Авторський дизайн, домашній затишок та щира гостинність. Забронюйте номер онлайн.",
+};
 
 export default function Home() {
   return (
-    <>
-      <Head>
-        <title>Онлайн-бронювання готелів — Ваш ідеальний відпочинок</title>
-        <meta
-          content="Забронюйте номер у нашому готелі швидко та зручно: виберіть дати, кількість гостей та насолоджуйтеся комфортом і високоякісним сервісом."
-          name="description"
-        />
-      </Head>
-
+    <main className="bg-[#FAF8F4]">
       <HeroSection />
       <BookingSection />
-      <InfoBlocks />
-    </>
+      <FeaturedRooms />
+      <SplitCTA />
+    </main>
   );
 }

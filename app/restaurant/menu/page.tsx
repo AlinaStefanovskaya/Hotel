@@ -1,195 +1,256 @@
-"use client";
+import type { Metadata } from "next";
 
-import Head from "next/head";
 import Link from "next/link";
+import Image from "next/image";
+import { Utensils, Wine, Coffee, IceCream } from "lucide-react";
 
-import Container from "@/components/Container";
+import PageHero from "@/components/PageHero";
+import SectionHeader from "@/components/SectionHeader";
+
+export const metadata: Metadata = {
+  title: "Меню ресторану «Воля» — карпатська кухня",
+  description:
+    "Сезонне меню ресторану «Воля»: страви з локальних продуктів, вина, десерти. Понад 80 позицій. Завантажте PDF або забронюйте столик.",
+};
+
+const dishes = [
+  {
+    badge: "Сезонне",
+    name: "Бограч по-закарпатськи",
+    description:
+      "Густий гуляш на відкритому вогні з телятиною, паприкою та галушками.",
+    price: "320 ₴",
+    image: "/images/restorant_2.jpg",
+  },
+  {
+    badge: "Хіт шефа",
+    name: "Форель з гірського потоку",
+    description: "Запечена ціла форель з лимоном, тим’яном і картоплею-бейбі.",
+    price: "480 ₴",
+    image: "/images/restorant_3.jpg",
+  },
+  {
+    badge: "Локальне",
+    name: "Деруни з білими грибами",
+    description:
+      "Картопляні деруни з карпатськими білими грибами та домашньою сметаною.",
+    price: "260 ₴",
+    image: "/images/restorant_4.jpg",
+  },
+  {
+    badge: "Вегетаріанське",
+    name: "Бринзяні налисники",
+    description: "Тонкі млинці з овечою бринзою, шпинатом та горіховим соусом.",
+    price: "240 ₴",
+    image: "/images/restorant_5.jpg",
+  },
+  {
+    badge: "Гриль",
+    name: "Шашлик із ягнятини",
+    description:
+      "Маринована ягнятина на вугіллі з печеними овочами та ткемалі.",
+    price: "420 ₴",
+    image: "/images/restorant_1.jpg",
+  },
+  {
+    badge: "Десерт",
+    name: "Медівник «Воля»",
+    description:
+      "Багатошаровий медовий торт за родинним рецептом з кремом маскарпоне.",
+    price: "180 ₴",
+    image: "/images/restorant_5.jpg",
+  },
+];
+
+const categories = [
+  {
+    icon: Utensils,
+    name: "Основне меню",
+    count: "24 позиції",
+    href: "https://ukrainski-stravy.com.ua/wp-content/uploads/2025/03/soups.pdf",
+  },
+  {
+    icon: Wine,
+    name: "Напої",
+    count: "80+ позицій",
+    href: "https://ukrainski-stravy.com.ua/wp-content/uploads/2025/03/cold-drinks.pdf",
+  },
+  {
+    icon: IceCream,
+    name: "Десерти",
+    count: "12 позицій",
+    href: "https://ukrainski-stravy.com.ua/wp-content/uploads/2025/03/desserts-ice.pdf",
+  },
+  {
+    icon: Coffee,
+    name: "Сніданки",
+    count: "32 позиції",
+    href: "https://ukrainski-stravy.com.ua/wp-content/uploads/2025/03/breakfasts.pdf",
+  },
+];
 
 export default function MenuPage() {
   return (
     <>
-      <Head>
-        <title>Меню ресторану «В.О.Л.Я.»</title>
-        <meta
-          content="Ознайомтеся з меню нашого ресторану — широкий вибір страв для справжніх гурманів."
-          name="description"
-        />
-      </Head>
+      <PageHero
+        crumbs={[
+          { label: "Головна", href: "/" },
+          { label: "Ресторан", href: "/restaurant" },
+          { label: "Меню" },
+        ]}
+        description="Сезонна карпатська кухня з локальних продуктів. Понад 80 позицій вин та авторські страви від шефа."
+        image="/images/restorant_3.jpg"
+        title="Меню"
+      />
 
-      <div className="relative h-[400px] w-full bg-[url(https://ukrainski-stravy.com.ua/wp-content/uploads/2019/04/%D1%8C%D1%83%D1%82%D0%B3.png)] bg-cover overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-black/30" />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center text-white">
-            <h1 className="mb-4 text-5xl font-bold">Меню ресторану</h1>
-            <p className="text-xl">
-              Відкрийте для себе вишукані смаки нашої кухні
-            </p>
-          </div>
-        </div>
-      </div>
+      {/* Dishes grid */}
+      <section className="py-20 lg:py-28 bg-background">
+        <div className="container mx-auto px-4">
+          <SectionHeader
+            description="Найпопулярніші позиції цього сезону. Повне меню — у нашому PDF або у залі ресторану."
+            eyebrow="Хіти кухні"
+            title="Страви, заради яких повертаються"
+          />
 
-      <Container className="py-12">
-        <div className="space-y-8">
-          <div className="text-center">
-            <h2 className="mb-4 text-3xl font-bold text-gray-800">Наше меню</h2>
-            <p className="text-base leading-relaxed text-gray-700">
-              Ми пишаємось нашою авторською кухнею, яка поєднує традиційні
-              українські страви з сучасними кулінарними тенденціями. Всі страви
-              готуються з найсвіжіших місцевих продуктів.
-            </p>
-          </div>
-
-          {/* Список позиций меню */}
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {[
-              {
-                title: "Деруни зі сметаною",
-                imgLink:"https://vibagliviyhlop.com.ua/wp-content/uploads/2023/02/%D0%94%D0%B5%D1%80%D1%83%D0%BD%D0%B8-%D0%B7-%D1%81%D0%BC%D0%B5%D1%82%D0%B0%D0%BD%D0%BE%D1%8E-1.jpg",
-                desc: "ПримТрадиційні деруни з тертої картоплі, обсмажені до золотистої скоринки та подані зі свіжою домашньою сметаною. Ситна страва з вираженим українським смаком, що ідеально підходить для теплого обіду",
-                price: "250 грн",
-              },
-              {
-                title: "Бульйон курячий з перепелиними яйцями",
-                imgLink: "https://img.postershop.me/11876/Products/3204100_1683110436.3421_original.jpg",
-                desc: "Ніжний ароматний бульйон на основі домашньої курки, поданий із м’ясом, овочами та перепелиними яйцями. Легкий, поживний та зігріваючий суп, що смакує у будь-яку пору дня.",
-                price: "300 грн",
-              },
-              {
-                title: "Борщ український в домашньому хлібі",
-                imgLink: "https://cdn.abo.media/upload/article/yyds5rt93u6vjz5s5vfj.jpg",
-                desc: "Класичний український борщ на м’ясному бульйоні, з ароматними овочами та прянощами, поданий у теплому домашньому хлібі замість тарілки. Насичений смак та оригінальна подача створюють справжній гастрономічний досвід.",
-                price: "400 грн",
-              },
-              {
-                title: "Десерт “Наполеон Люкс”",
-                imgLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMz4V5Du6ufVBn94JuMLBEsyeThBikJbKVSQ&s",
-                desc: "Ніжний листковий десерт з делікатним кремом, що тане в роті. Поєднання хрустких шарів та кремової текстури створює вишуканий смак, а легка солодкість робить його ідеальним завершенням трапези.",
-                price: "150 грн",
-              },
-              {
-                title: "Десерт “П’яна вишня”",
-                imgLink: "https://shuba.life/static/content/thumbs/1824x912/a/35/xweevz---c2x1x50px50p-up--0bcf22b642026d5a3639526f1fef935a.jpg",
-                desc: "Ніжний шоколадний десерт з ароматними вишнями, настояними у лікері, що надає вишукану солодко-ягідну нотку з легкою алкогольною пікантністю. Ідеальний баланс смаку для справжніх гурманів.",
-                price: "200 грн",
-              },
-              {
-                title: "Млинці з сиром",
-                imgLink: "https://easy-food.com.ua/image/cache/catalog/foto-min/blinchik-tvorog-min-800x800.png",
-                desc: "Тонкі домашні млинці з ніжною сирною начинкою, злегка підсолодженою та збалансованою за смаком. Подаються теплими, з вершковими нотками та м’якою текстурою.",
-                price: "220 грн",
-              },
-            ].map((item) => (
-              <div
-                key={item.title}
-                className="overflow-hidden rounded-lg border shadow-md"
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
+            {dishes.map((dish) => (
+              <article
+                key={dish.name}
+                className="group bg-card rounded-xl overflow-hidden border border-border hover:shadow-xl transition-all duration-300"
               >
-                <div className="relative h-64 bg-gray-200">
-                  
-                  <div
-                    className="flex h-full items-center justify-center bg-cover bg-center"
-                    style={{ backgroundImage: `url(${item.imgLink})` }}
+                <div className="relative aspect-[4/3] overflow-hidden">
+                  <Image
+                    fill
+                    alt={dish.name}
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    src={dish.image}
                   />
+                  <span className="absolute top-3 left-3 bg-primary text-primary-foreground text-xs uppercase tracking-wider px-3 py-1 rounded-full">
+                    {dish.badge}
+                  </span>
                 </div>
-                <div className="p-4">
-                  <h3 className="mb-2 text-xl font-semibold text-gray-800">
-                    {item.title}
-                  </h3>
-                  <p className="mb-3 text-sm text-gray-600">
-                    {item.desc}
+                <div className="p-6">
+                  <h3 className="font-serif text-xl mb-2">{dish.name}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed mb-4 min-h-[60px]">
+                    {dish.description}
                   </p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-lg font-bold text-primary">
-                       {item.price}
+                  <div className="flex items-center justify-between pt-4 border-t border-border">
+                    <span className="font-serif text-2xl text-primary">
+                      {dish.price}
                     </span>
+                    <Utensils className="w-5 h-5 text-muted-foreground" />
                   </div>
                 </div>
-              </div>
+              </article>
             ))}
           </div>
+        </div>
+      </section>
 
-          {/* Меню */}
-          <div className="rounded-lg bg-gray-50 p-8">
-            <h3 className="mb-6 text-center text-2xl font-semibold text-gray-800">
-              Наше меню
-            </h3>
-            <p className="mb-6 text-center text-gray-700">
-              Ознайомтеся з повним меню нашого ресторану
-            </p>
-
-            {/* Заглушки меню */}
-            <div className="grid gap-6 md:grid-cols-2">
-              {[
-                {
-                  title: "Основне меню",
-                  icon: "ri-restaurant-line",
-                  menuLink:
-                    "https://ukrainski-stravy.com.ua/wp-content/uploads/2025/03/soups.pdf",
-                },
-                {
-                  title: "Напої",
-                  icon: "ri-goblet-line",
-                  menuLink:
-                    "https://ukrainski-stravy.com.ua/wp-content/uploads/2025/03/cold-drinks.pdf",
-                },
-                {
-                  title: "Десерти",
-                  icon: "ri-cake-3-line",
-                  menuLink:
-                    "https://ukrainski-stravy.com.ua/wp-content/uploads/2025/03/desserts-ice.pdf",
-                },
-                {
-                  title: "Сніданки",
-                  icon: "ri-sun-line",
-                  menuLink:
-                    "https://ukrainski-stravy.com.ua/wp-content/uploads/2025/03/breakfasts.pdf",
-                },
-              ].map((category) => (
-                <div
-                  key={category.title}
-                  className="overflow-hidden rounded-lg border bg-white shadow-md"
-                >
-                  <Link
-                    className="flex h-48 items-center justify-center bg-gray-100"
-                    href={category.menuLink}
+      {/* Categories + PDF */}
+      <section className="py-20 lg:py-28 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <SectionHeader
+                align="left"
+                description="Завантажте повне меню у PDF або перегляньте категорії онлайн."
+                eyebrow="Повне меню"
+                title="Категорії та PDF"
+              />
+              <div className="grid sm:grid-cols-2 gap-4 mt-8">
+                {categories.map(({ icon: Icon, name, count, href }) => (
+                  <a
+                    key={name}
+                    className="flex items-center gap-4 p-5 bg-card border border-border rounded-xl hover:shadow-md hover:border-primary/30 transition-all duration-200"
+                    href={href}
+                    rel="noopener noreferrer"
                     target="_blank"
                   >
-                    <div className="text-center">
-                      <i
-                        className={`${category.icon} mb-2 text-6xl text-gray-400`}
-                      />
-                      <p className="text-lg font-semibold text-gray-600">
-                        {category.title}
-                      </p>
+                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <Icon className="w-6 h-6 text-primary" />
                     </div>
-                  </Link>
-                  <div className="p-4">
-                    <p className="text-center text-sm text-gray-600">
-                      Зателефонуйте для ознайомлення з повним меню
-                    </p>
-                  </div>
-                </div>
-              ))}
+                    <div>
+                      <div className="font-medium">{name}</div>
+                      <div className="text-sm text-muted-foreground">
+                        {count}
+                      </div>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            <div className="relative aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl">
+              <Image
+                fill
+                alt="Меню ресторану Воля"
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                src="/images/restorant_4.jpg"
+              />
             </div>
           </div>
+        </div>
+      </section>
 
-          <div className="mt-12 rounded-lg bg-primary/10 p-6 text-center">
-            <h3 className="mb-2 text-2xl font-semibold text-gray-800">
-              Бажаєте дізнатися більше?
-            </h3>
-            <p className="mb-4 text-gray-700">
-              Зателефонуйте нам, і ми з радістю розповімо про всі наші страви та
-              спеціальні пропозиції
+      {/* CTA */}
+      <section className="bg-[#FAF8F4] px-6 py-20 lg:py-28">
+        <div className="mx-auto grid max-w-[1320px] gap-8 lg:grid-cols-2">
+          <div className="rounded-[28px] bg-[#1A1A2E] p-10 text-white md:p-14">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.36em] text-[#C9A96E]">
+              Замовлення столику
             </p>
-            <a
-              className="inline-flex items-center gap-2 text-xl font-semibold text-primary hover:underline"
-              href="tel:+380661927167"
+
+            <h2 className="mt-6 font-display text-4xl font-semibold leading-tight md:text-5xl">
+              Зарезервувати{" "}
+              <span className="font-display italic text-[#E8C98A]">столик</span>
+            </h2>
+
+            <p className="mt-5 max-w-md text-sm leading-relaxed text-white/70">
+              Вечерю в залі або на терасі з виглядом на бухту — мінімум за 4
+              години.
+            </p>
+
+            <Link
+              className="mt-9 inline-flex items-center gap-2 rounded-full bg-[#C9A96E] px-7 py-4 text-sm font-semibold text-[#1A1A2E] transition hover:bg-[#E8C98A]"
+              href="/restaurant/booking"
             >
-              <i className="ri-phone-line" />
-              +380 (66) 192-71-67
-            </a>
+              Перейти до бронювання
+              <span aria-hidden="true">→</span>
+            </Link>
+          </div>
+
+          <div className="rounded-[28px] border border-[#EFEAE0] bg-white p-10 md:p-14">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.36em] text-[#C9A96E]">
+              In-room dining
+            </p>
+
+            <h2 className="mt-6 font-display text-4xl font-semibold leading-tight text-[#1A1A2E] md:text-5xl">
+              Доставка в{" "}
+              <span className="font-display italic font-normal text-[#1A1A2E]">
+                номер
+              </span>
+            </h2>
+
+            <p className="mt-5 max-w-md text-sm leading-relaxed text-[#9090AA]">
+              Будь-яка позиція з меню — за 30–45 хвилин до вашого номеру.
+              Безкоштовно для гостей готелю.
+            </p>
+
+            <Link
+              className="mt-9 inline-flex items-center gap-2 text-sm font-medium text-[#1A1A2E] transition hover:text-[#C9A96E]"
+              href="/restaurant/delivery"
+            >
+              Дізнатись більше
+              <span aria-hidden="true" className="text-[#C9A96E]">
+                →
+              </span>
+            </Link>
           </div>
         </div>
-      </Container>
+      </section>
     </>
   );
 }

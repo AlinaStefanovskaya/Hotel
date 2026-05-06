@@ -1,5 +1,11 @@
 "use client";
 
+import type {
+  RoomDetail,
+  RoomOpt,
+  PricingResult,
+} from "./BookingClientWrapper";
+
 import {
   Input,
   Select,
@@ -8,17 +14,18 @@ import {
   Button,
   RadioGroup,
   Radio,
+  Tooltip,
 } from "@heroui/react";
 import { CalendarDateTime, getLocalTimeZone } from "@internationalized/date";
-import { parseISO, format as fmt, differenceInCalendarDays } from "date-fns";
-import { useEffect, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { parseISO, format as fmt, format } from "date-fns";
+import { uk } from "date-fns/locale";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { z } from "zod";
 
 import PaymentModal from "./PaymentModal";
 
 import CustomDatePicker from "@/components/CustomDatePicker";
-import { calculateFinalPrice } from "@/lib/pricing";
 
 /* ── константи дорослі / діти ─────────────────────── */
 const ADULTS = [
@@ -34,7 +41,6 @@ const KIDS = [
 ];
 
 /* ── схема валідації ─────────────────────────────── */
-// Формат: +38 (0XX) XXX-XX-XX або прості цифри
 const phoneRe = /^\+38 \(\d{3}\) \d{3}-\d{2}-\d{2}$|^\+?[0-9\s\-()]{10,20}$/;
 const schema = z.object({
   name: z.string().min(2),
@@ -53,111 +59,155 @@ const schema = z.object({
   }),
 });
 
-/* ── Date → CalendarDateTime (локальна дата, без UTC-зсуву) ── */
-const toCDT = (d: Date | null) =>
-  d
-    ? new CalendarDateTime(d.getFullYear(), d.getMonth() + 1, d.getDate(), 0, 0)
-    : null;
+/* ── Props ───────────────────────────────────────── */
+interface BookingFormProps {
+  /* Shared state (from BookingClientWrapper) */
+  checkIn: CalendarDateTime | null;
+  checkOut: CalendarDateTime | null;
+  adults: string;
+  kidsCount: string;
+  roomId: string;
+  rooms: RoomOpt[];
+  roomDetail: RoomDetail | null;
+  pricing: PricingResult | null;
+  /* Setters */
+  onCheckInChange: (v: CalendarDateTime | null) => void;
+  onCheckOutChange: (v: CalendarDateTime | null) => void;
+  onAdultsChange: (v: string) => void;
+  onChildrenChange: (v: string) => void;
+  onRoomIdChange: (v: string) => void;
+}
+
+/* ── оформлення секції ────────────────────────────── */
+function Section({
+  num,
+  title,
+  subtitle,
+  children,
+}: {
+  num: string;
+  title: string;
+  subtitle?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="border-t border-[#EFEAE0] pt-10 first:border-t-0 first:pt-0">
+      <div className="mb-6 flex items-baseline gap-4">
+        <span className="font-serif text-2xl text-[#B89B6A]">{num}</span>
+        <div>
+          <h3 className="font-serif text-xl tracking-wide text-[#1A1A2E]">
+            {title}
+          </h3>
+          {subtitle && (
+            <p className="mt-1 text-sm text-[#6B6B7A]">{subtitle}</p>
+          )}
+        </div>
+      </div>
+      <div className="space-y-5">{children}</div>
+    </section>
+  );
+}
 
 /* ─────────────────────────────────────────────────── */
 
-export default function BookingForm() {
-  const search = useSearchParams();
+export default function BookingForm({
+  checkIn,
+  checkOut,
+  adults,
+  kidsCount: children,
+  roomId,
+  rooms,
+  roomDetail,
+  pricing,
+  onCheckInChange,
+  onCheckOutChange,
+  onAdultsChange,
+  onChildrenChange,
+  onRoomIdChange,
+}: BookingFormProps) {
   const nav = useRouter();
 
-  /* ---------- список номерів (підтягуємо один раз) ---------- */
-  type RoomOpt = { key: string; label: string; price?: number };
-  const [rooms, setRooms] = useState<RoomOpt[]>([]);
-
-  useEffect(() => {
-    (async () => {
-      const res = await fetch("/api/rooms-list");
-      const { rooms } = (await res.json()) as {
-        rooms: { _id: string; room_name: string; room_price?: number }[];
-      };
-
-      setRooms(
-        rooms.map((r) => ({
-          key: r._id,
-          label: r.room_name,
-          price: r.room_price ?? 0,
-        }))
-      );
-    })();
-  }, []);
-
-  /* ---------- initial state з query-string ---------- */
-  const [form, set] = useState({
-    name: "",
-    phone: "",
-    checkIn: toCDT(
-      search.get("checkIn") ? parseISO(search.get("checkIn")!) : null
-    ),
-    checkOut: toCDT(
-      search.get("checkOut") ? parseISO(search.get("checkOut")!) : null
-    ),
-    adults: search.get("adults") ?? "1",
-    children: search.get("children") ?? "0",
-    roomId: search.get("room") ?? "",
-    price: Number(search.get("price") ?? 0),
-    paymentType: "cash" as "cash" | "online",
-    agree: false,
-  });
-
+  /* ---------- локальний стан форми ---------- */
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [paymentType, setPaymentType] = useState<"cash" | "online">("cash");
+  const [agree, setAgree] = useState(false);
   const [err, setErr] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [paymentStatus, setPaymentStatus] = useState<"unpaid" | "paid">(
-    "unpaid"
-  );
+  const [, setPaymentStatus] = useState<"unpaid" | "paid">("unpaid");
 
-  /* ---------- автоматический пересчет цены при изменении дат или номера ---------- */
-  useEffect(() => {
-    // Проверяем что все нужные данные есть
-    if (!form.roomId || !form.checkIn || !form.checkOut || rooms.length === 0) {
-      return;
+  /* ---------- Валідація доступності та місткості ---------- */
+  const checkInDate = checkIn
+    ? new Date(checkIn.year, checkIn.month - 1, checkIn.day)
+    : null;
+  const checkOutDate = checkOut
+    ? new Date(checkOut.year, checkOut.month - 1, checkOut.day)
+    : null;
+
+  const validationReasons: string[] = [];
+
+  // Перевірка перетину з недоступними датами
+  if (checkInDate && checkOutDate && roomDetail) {
+    for (const r of roomDetail.unavailableRanges) {
+      const f = parseISO(r.from);
+      const t = parseISO(r.to);
+
+      if (t > checkInDate && f < checkOutDate) {
+        validationReasons.push(
+          `Номер зайнятий з ${format(f, "dd MMM yyyy", { locale: uk })} ` +
+            `по ${format(t, "dd MMM yyyy", { locale: uk })}`
+        );
+        break;
+      }
     }
+  }
 
-    // Ищем комнату в списке
-    const found = rooms.find((r) => r.key === form.roomId);
+  // Перевірка місткості
+  if (roomDetail) {
+    const totalGuests = parseInt(adults) + parseInt(children);
 
-    if (!found || !found.price) {
-      return;
+    if (totalGuests > roomDetail.maxPeople) {
+      validationReasons.push(
+        `Номер розрахований максимум на ${roomDetail.maxPeople} гост${
+          roomDetail.maxPeople === 1 ? "я" : "ей"
+        }`
+      );
+    } else if (parseInt(children) > roomDetail.maxChild) {
+      validationReasons.push(
+        `Приймає максимум ${roomDetail.maxChild} ${
+          roomDetail.maxChild === 0
+            ? "дітей"
+            : roomDetail.maxChild === 1
+              ? "дитину"
+              : "дітей"
+        }`
+      );
     }
+  }
 
-    const checkInDate = form.checkIn.toDate(getLocalTimeZone());
-    const checkOutDate = form.checkOut.toDate(getLocalTimeZone());
-    const nights = Math.max(
-      1,
-      differenceInCalendarDays(checkOutDate, checkInDate)
-    );
-
-    const calculatedPrice = calculateFinalPrice(
-      found.price,
-      checkInDate,
-      checkOutDate,
-      nights
-    );
-
-    set((f) => ({ ...f, price: calculatedPrice }));
-  }, [form.roomId, form.checkIn, form.checkOut, rooms]);
-
-  /* ---------- коли обираємо номер обновлюємо ціну (якщо є) ---------- */
-  const handleRoomSelect = (id: string) => {
-    set((f) => ({
-      ...f,
-      roomId: id,
-    }));
-  };
+  const hasDates = !!checkIn && !!checkOut;
+  const isBookingBlocked = !hasDates || validationReasons.length > 0;
+  const tooltipText = !hasDates
+    ? "Оберіть дати заселення та виселення"
+    : validationReasons.join(" • ");
 
   /* ---------- submit ---------- */
   const submit = async () => {
+    if (isBookingBlocked) return;
+
+    const price = pricing?.finalPrice ?? 0;
     const data = {
-      ...form,
-      adults: Number(form.adults),
-      children: Number(form.children),
-      checkIn: form.checkIn?.toDate(getLocalTimeZone()),
-      checkOut: form.checkOut?.toDate(getLocalTimeZone()),
+      name,
+      phone,
+      adults: Number(adults),
+      children: Number(children),
+      checkIn: checkIn!.toDate(getLocalTimeZone()),
+      checkOut: checkOut!.toDate(getLocalTimeZone()),
+      roomId,
+      price,
+      paymentType,
+      agree,
     };
 
     const v = schema.safeParse(data);
@@ -172,42 +222,37 @@ export default function BookingForm() {
     }
     setErr({});
 
-    // Якщо онлайн оплата - показуємо модалку
-    if (form.paymentType === "online") {
+    if (paymentType === "online") {
       setShowPaymentModal(true);
 
       return;
     }
 
-    // Для готівки статус завжди unpaid
     setPaymentStatus("unpaid");
     await sendBooking(v.data, "unpaid");
   };
 
-  /* ---------- відправка бронювання ---------- */
+  /* ---------- відправка ---------- */
   const sendBooking = async (data: any, paymentStat: "unpaid" | "paid") => {
     setBusy(true);
 
     const payload = {
-      roomId: form.roomId,
+      roomId,
       from: data.checkIn.toISOString(),
       to: data.checkOut.toISOString(),
       payload: {
-        user_name: form.name,
-        user_phone: form.phone,
+        user_name: name,
+        user_phone: phone,
         rent_from: fmt(data.checkIn, "yyyy-MM-dd"),
         rent_to: fmt(data.checkOut, "yyyy-MM-dd"),
-        rent_price: form.price,
+        rent_price: pricing?.finalPrice ?? 0,
         people_count: data.adults,
         child_count: data.children,
-        payment_type: form.paymentType,
+        payment_type: paymentType,
         payment_status: paymentStat,
       },
     };
 
-    console.log("📤 Відправляємо дані:", payload);
-
-    /* — відправляємо на свій API-route /api/book-room — */
     const res = await fetch("/api/book-room", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -216,10 +261,10 @@ export default function BookingForm() {
     const json = await res.json();
 
     if (!res.ok) {
+      // eslint-disable-next-line no-console
       console.error("❌ Помилка API:", json);
-      if (json.details) {
-        console.error("🔴 Деталі помилок:", json.details);
-      }
+      // eslint-disable-next-line no-console
+      if (json.details) console.error("🔴 Деталі помилок:", json.details);
       setErr({ general: json.error ?? "Помилка бронювання" });
       setBusy(false);
 
@@ -235,178 +280,241 @@ export default function BookingForm() {
     nav.replace("/thank-you");
   };
 
+  /* ---------- маска телефону ---------- */
+  const onPhoneChange = (v: string) => {
+    let cleaned = v.replace(/\D/g, "");
+
+    if (cleaned.startsWith("38")) {
+      // ok
+    } else if (cleaned.startsWith("0")) {
+      cleaned = "38" + cleaned;
+    } else if (cleaned.length > 0) {
+      cleaned = "380" + cleaned;
+    }
+    if (cleaned.length > 12) cleaned = cleaned.slice(0, 12);
+
+    let formatted = "";
+
+    if (cleaned.length > 0) formatted = "+" + cleaned.slice(0, 2);
+    if (cleaned.length > 2) formatted += " (" + cleaned.slice(2, 5);
+    if (cleaned.length > 5) formatted += ") " + cleaned.slice(5, 8);
+    if (cleaned.length > 8) formatted += "-" + cleaned.slice(8, 10);
+    if (cleaned.length > 10) formatted += "-" + cleaned.slice(10, 12);
+
+    setPhone(formatted);
+  };
+
   /* ---------- UI ---------- */
   return (
-    <div className="max-w-xl mx-auto mt-[64px] py-12 space-y-6">
-      <Input
-        errorMessage={err.name}
-        isInvalid={!!err.name}
-        label="Ім’я"
-        value={form.name}
-        onValueChange={(v) => set((f) => ({ ...f, name: v }))}
-      />
+    <div className="space-y-12">
+      {/* 01 — ДАТИ */}
+      <Section
+        num="01"
+        subtitle="Травень–вересень — високий сезон (+15%). Від 3 ночей — знижка від 5%."
+        title="Дати перебування"
+      >
+        <div className="grid gap-5 sm:grid-cols-2">
+          <CustomDatePicker
+            description="Травень-вересень: високий сезон (+15%)"
+            disabledRanges={roomDetail?.unavailableRanges}
+            isInvalid={!!err.checkIn}
+            label="Дата заїзду"
+            value={checkIn}
+            onChange={(v) => {
+              if (v && checkOut) {
+                const ci = new Date(v.year, v.month - 1, v.day);
+                const co = new Date(
+                  checkOut.year,
+                  checkOut.month - 1,
+                  checkOut.day
+                );
 
-      <Input
-        errorMessage={err.phone}
-        isInvalid={!!err.phone}
-        label="Контактний номер"
-        placeholder="+38 (0__) ___-__-__"
-        value={form.phone}
-        onValueChange={(v) => {
-          // Маска для українського телефону: +38 (0XX) XXX-XX-XX
-          let cleaned = v.replace(/\D/g, ""); // тільки цифри
-
-          // Якщо починається з 38, залишаємо
-          if (cleaned.startsWith("38")) {
-            cleaned = cleaned;
-          } else if (cleaned.startsWith("0")) {
-            // Якщо починається з 0, додаємо 38
-            cleaned = "38" + cleaned;
-          } else if (cleaned.length > 0) {
-            // Інші цифри - додаємо 380
-            cleaned = "380" + cleaned;
-          }
-
-          // Обмежуємо 12 цифр (38 + 10 цифр)
-          if (cleaned.length > 12) {
-            cleaned = cleaned.slice(0, 12);
-          }
-
-          // Форматуємо: +38 (0XX) XXX-XX-XX
-          let formatted = "";
-
-          if (cleaned.length > 0) {
-            formatted = "+" + cleaned.slice(0, 2); // +38
-          }
-          if (cleaned.length > 2) {
-            formatted += " (" + cleaned.slice(2, 5); // +38 (0XX
-          }
-          if (cleaned.length > 5) {
-            formatted += ") " + cleaned.slice(5, 8); // +38 (0XX) XXX
-          }
-          if (cleaned.length > 8) {
-            formatted += "-" + cleaned.slice(8, 10); // +38 (0XX) XXX-XX
-          }
-          if (cleaned.length > 10) {
-            formatted += "-" + cleaned.slice(10, 12); // +38 (0XX) XXX-XX-XX
-          }
-
-          set((f) => ({ ...f, phone: formatted }));
-        }}
-      />
-
-      <CustomDatePicker
-        description="Травень-вересень: високий сезон (+15%)"
-        isInvalid={!!err.checkIn}
-        label="Дата заїзду"
-        value={form.checkIn}
-        onChange={(v) =>
-          set((f) => {
-            // Якщо нова дата заїзду >= дати виїзду, скидаємо
-            if (v && f.checkOut) {
-              const checkInDate = new Date(v.year, v.month - 1, v.day);
-              const checkOutDate = new Date(
-                f.checkOut.year,
-                f.checkOut.month - 1,
-                f.checkOut.day
-              );
-
-              if (checkInDate >= checkOutDate) {
-                return { ...f, checkIn: v, checkOut: null };
+                if (ci >= co) {
+                  onCheckOutChange(null);
+                }
               }
+              onCheckInChange(v);
+            }}
+          />
+          <CustomDatePicker
+            description="Від 3 днів: знижка від 5%"
+            disabledRanges={roomDetail?.unavailableRanges}
+            isInvalid={!!err.checkOut}
+            label="Дата виїзду"
+            minValue={checkIn ?? undefined}
+            value={checkOut}
+            onChange={onCheckOutChange}
+          />
+        </div>
+      </Section>
+
+      {/* 02 — НОМЕР І ГОСТІ */}
+      <Section
+        num="02"
+        subtitle="Оберіть тип номера й кількість гостей."
+        title="Номер і гості"
+      >
+        <Select
+          isInvalid={!!err.roomId}
+          label="Номер"
+          placeholder="Оберіть номер"
+          selectedKeys={new Set([roomId])}
+          onSelectionChange={(k) => onRoomIdChange(Array.from(k)[0] as string)}
+        >
+          {rooms.map((r) => (
+            <SelectItem key={r.key}>{r.label}</SelectItem>
+          ))}
+        </Select>
+
+        <div className="grid gap-5 sm:grid-cols-2">
+          <Select
+            isInvalid={
+              !!(
+                roomDetail &&
+                parseInt(adults) + parseInt(children) > roomDetail.maxPeople
+              )
             }
+            label="Дорослі"
+            selectedKeys={new Set([adults])}
+            onSelectionChange={(k) =>
+              onAdultsChange(Array.from(k)[0] as string)
+            }
+          >
+            {ADULTS.map((o) => (
+              <SelectItem key={o.key}>{o.label}</SelectItem>
+            ))}
+          </Select>
 
-            return { ...f, checkIn: v };
-          })
-        }
-      />
-      <CustomDatePicker
-        description="Від 3 днів: знижка від 5%"
-        isInvalid={!!err.checkOut}
-        label="Дата виїзду"
-        minValue={form.checkIn ?? undefined}
-        value={form.checkOut}
-        onChange={(v) => set((f) => ({ ...f, checkOut: v }))}
-      />
+          <Select
+            isInvalid={
+              !!(
+                roomDetail &&
+                (parseInt(adults) + parseInt(children) > roomDetail.maxPeople ||
+                  parseInt(children) > roomDetail.maxChild)
+              )
+            }
+            label="Діти"
+            selectedKeys={new Set([children])}
+            onSelectionChange={(k) =>
+              onChildrenChange(Array.from(k)[0] as string)
+            }
+          >
+            {KIDS.map((o) => (
+              <SelectItem key={o.key}>{o.label}</SelectItem>
+            ))}
+          </Select>
+        </div>
 
-      <Select
-        label="Дорослі"
-        selectedKeys={new Set([form.adults])}
-        onSelectionChange={(k) =>
-          set((f) => ({ ...f, adults: Array.from(k)[0] as string }))
-        }
+        {/* Попередження про місткість */}
+        {validationReasons
+          .filter((r) => r.includes("максимум") || r.includes("Приймає"))
+          .map((reason, i) => (
+            <p key={i} className="text-sm text-red-500">
+              {reason}
+            </p>
+          ))}
+      </Section>
+
+      {/* 03 — КОНТАКТИ */}
+      <Section
+        num="03"
+        subtitle="На цей номер зателефонуємо для підтвердження."
+        title="Контакти гостя"
       >
-        {ADULTS.map((o) => (
-          <SelectItem key={o.key}>{o.label}</SelectItem>
-        ))}
-      </Select>
+        <div className="grid gap-5 sm:grid-cols-2">
+          <Input
+            errorMessage={err.name}
+            isInvalid={!!err.name}
+            label="Ім'я"
+            value={name}
+            onValueChange={setName}
+          />
+          <Input
+            errorMessage={err.phone}
+            isInvalid={!!err.phone}
+            label="Контактний номер"
+            placeholder="+38 (0__) ___-__-__"
+            value={phone}
+            onValueChange={onPhoneChange}
+          />
+        </div>
+      </Section>
 
-      <Select
-        label="Діти"
-        selectedKeys={new Set([form.children])}
-        onSelectionChange={(k) =>
-          set((f) => ({ ...f, children: Array.from(k)[0] as string }))
-        }
+      {/* 04 — ОПЛАТА */}
+      <Section
+        num="04"
+        subtitle="Оберіть зручний спосіб оплати."
+        title="Оплата та підтвердження"
       >
-        {KIDS.map((o) => (
-          <SelectItem key={o.key}>{o.label}</SelectItem>
-        ))}
-      </Select>
+        <Input
+          isReadOnly
+          label="Вартість, грн"
+          value={
+            pricing ? `${pricing.finalPrice.toLocaleString("uk-UA")} грн` : "—"
+          }
+        />
 
-      <Select
-        isInvalid={!!err.roomId}
-        label="Номер"
-        placeholder="Оберіть номер"
-        selectedKeys={new Set([form.roomId])}
-        onSelectionChange={(k) => handleRoomSelect(Array.from(k)[0] as string)}
-      >
-        {rooms.map((r) => (
-          <SelectItem key={r.key}>{r.label}</SelectItem>
-        ))}
-      </Select>
+        <RadioGroup
+          label="Тип оплати"
+          value={paymentType}
+          onValueChange={(v) => setPaymentType(v as "cash" | "online")}
+        >
+          <Radio value="cash">Готівка (розрахунок на місці)</Radio>
+          <Radio value="online">Онлайн оплата</Radio>
+        </RadioGroup>
 
-      <Input
-        isReadOnly
-        label="Вартість, грн"
-        value={form.price ? String(form.price) : "—"}
-      />
+        <Checkbox
+          isInvalid={!!err.agree}
+          isSelected={agree}
+          onValueChange={setAgree}
+        >
+          Я погоджуюсь з умовами користування
+        </Checkbox>
 
-      <RadioGroup
-        label="Тип оплати"
-        value={form.paymentType}
-        onValueChange={(v) =>
-          set((f) => ({ ...f, paymentType: v as "cash" | "online" }))
-        }
-      >
-        <Radio value="cash">Готівка (розрахунок на місці)</Radio>
-        <Radio value="online">Онлайн оплата</Radio>
-      </RadioGroup>
+        {err.general && <p className="text-sm text-red-500">{err.general}</p>}
 
-      <Checkbox
-        isInvalid={!!err.agree}
-        isSelected={form.agree}
-        onValueChange={(v) => set((f) => ({ ...f, agree: v }))}
-      >
-        Я погоджуюсь з умовами користування
-      </Checkbox>
-
-      {err.general && <p className="text-sm text-red-500">{err.general}</p>}
-
-      <Button color="primary" isLoading={busy} onPress={submit}>
-        Підтвердити бронювання
-      </Button>
+        {isBookingBlocked ? (
+          <Tooltip content={tooltipText} placement="top">
+            <div className="w-full cursor-not-allowed rounded-none">
+              <Button
+                isDisabled
+                className="pointer-events-none w-full bg-[#1A1A2E]/30 text-white/60"
+                radius="none"
+                size="lg"
+              >
+                Підтвердити бронювання
+              </Button>
+            </div>
+          </Tooltip>
+        ) : (
+          <Button
+            className="w-full bg-[#1A1A2E] text-white hover:bg-[#1A1A2E]/90"
+            isLoading={busy}
+            radius="none"
+            size="lg"
+            onPress={submit}
+          >
+            Підтвердити бронювання
+          </Button>
+        )}
+      </Section>
 
       <PaymentModal
-        amount={form.price}
+        amount={pricing?.finalPrice ?? 0}
         isOpen={showPaymentModal}
         onClose={() => setShowPaymentModal(false)}
         onPaymentComplete={async (isPaid) => {
           const data = {
-            ...form,
-            adults: Number(form.adults),
-            children: Number(form.children),
-            checkIn: form.checkIn?.toDate(getLocalTimeZone()),
-            checkOut: form.checkOut?.toDate(getLocalTimeZone()),
+            name,
+            phone,
+            adults: Number(adults),
+            children: Number(children),
+            checkIn: checkIn?.toDate(getLocalTimeZone()),
+            checkOut: checkOut?.toDate(getLocalTimeZone()),
+            roomId,
+            price: pricing?.finalPrice ?? 0,
+            paymentType,
+            agree,
           };
           const status = isPaid ? "paid" : "unpaid";
 

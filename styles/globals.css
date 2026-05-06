@@ -1,354 +1,259 @@
-@import "remixicon/fonts/remixicon.css";
+/* styles/globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer utilities {
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
+@layer base {
+  :root {
+    --bg: 36 33% 97%; /* #FAF8F4 */
+    --ink: 240 33% 14%; /* #1A1A2E */
+    --gold: 36 45% 61%; /* #C9A96E */
+    --gold-light: 38 67% 73%;
+    --mute: 240 18% 62%; /* #9090AA */
+    --line: 38 31% 91%; /* #EFEAE0 */
+    --navy: 217 64% 22%; /* #0F3460 */
   }
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    background: #faf8f4;
+    color: #1a1a2e;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  body {
+    font-family:
+      var(--font-sans),
+      "Inter",
+      system-ui,
+      -apple-system,
+      sans-serif;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  ::selection {
+    background: #c9a96e;
+    color: #1a1a2e;
   }
 }
 
-/* Стилизация календаря для отображения сезонных цен */
 @layer components {
-  /* Высокий сезон: май (месяц 5) - сентябрь (месяц 9) */
-  .seasonal-calendar [data-slot="grid-body"] td {
-    position: relative;
-  }
-
-  /* Подсветка высокого сезона (май-сентябрь) желтым */
-  .seasonal-calendar [data-slot="grid-body"] td button[data-focus-visible] {
-    @apply ring-yellow-400;
-  }
-
-  /* Добавляем индикатор сезона */
-  .seasonal-calendar [data-slot="grid-body"] td button::after {
-    content: "";
-    position: absolute;
-    bottom: 2px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background-color: transparent;
-  }
-
-  /* Визуально отмечаем высокий сезон */
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button[aria-label*="May"]::after,
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button[aria-label*="June"]::after,
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button[aria-label*="July"]::after,
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button[aria-label*="August"]::after,
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button[aria-label*="September"]::after,
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button[aria-label*="травня"]::after,
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button[aria-label*="червня"]::after,
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button[aria-label*="липня"]::after,
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button[aria-label*="серпня"]::after,
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button[aria-label*="вересня"]::after {
-    background-color: #fbbf24; /* желтый для высокого сезона */
-  }
-
-  /* Фон для ячеек высокого сезона */
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button[aria-label*="May"]:not([data-disabled]),
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button[aria-label*="June"]:not([data-disabled]),
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button[aria-label*="July"]:not([data-disabled]),
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button[aria-label*="August"]:not([data-disabled]),
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button[aria-label*="September"]:not([data-disabled]),
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button[aria-label*="травня"]:not([data-disabled]),
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button[aria-label*="червня"]:not([data-disabled]),
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button[aria-label*="липня"]:not([data-disabled]),
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button[aria-label*="серпня"]:not([data-disabled]),
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button[aria-label*="вересня"]:not([data-disabled]) {
-    background-color: rgba(254, 240, 138, 0.2); /* светло-желтый фон */
-  }
-
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button[aria-label*="May"]:hover:not([data-disabled]),
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button[aria-label*="June"]:hover:not([data-disabled]),
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button[aria-label*="July"]:hover:not([data-disabled]),
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button[aria-label*="August"]:hover:not([data-disabled]),
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button[aria-label*="September"]:hover:not([data-disabled]),
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button[aria-label*="травня"]:hover:not([data-disabled]),
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button[aria-label*="червня"]:hover:not([data-disabled]),
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button[aria-label*="липня"]:hover:not([data-disabled]),
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button[aria-label*="серпня"]:hover:not([data-disabled]),
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button[aria-label*="вересня"]:hover:not([data-disabled]) {
-    background-color: rgba(254, 240, 138, 0.4); /* более яркий при hover */
-  }
-
-  /* Стили для недоступных дат (полностью забронированные) */
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button[data-unavailable="true"] {
-    background-color: #fecaca; /* red-200 */
-    color: #991b1b; /* red-800 */
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button[data-unavailable="true"]:hover {
-    background-color: #fca5a5; /* red-300 */
-  }
-
-  /* Стили для высокого сезона */
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button:not([data-unavailable="true"]):not([data-selected="true"])
-    [aria-label*="May"],
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button:not([data-unavailable="true"]):not([data-selected="true"])
-    [aria-label*="June"],
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button:not([data-unavailable="true"]):not([data-selected="true"])
-    [aria-label*="July"],
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button:not([data-unavailable="true"]):not([data-selected="true"])
-    [aria-label*="August"],
-  .seasonal-calendar
-    [data-slot="grid-body"]
-    td
-    button:not([data-unavailable="true"]):not([data-selected="true"])
-    [aria-label*="September"] {
-    background-color: #fef3c7; /* yellow-200 */
-  }
-
-  /* ===== Кастомный календарь с react-day-picker ===== */
+  /* ===== Кастомний календар — палітра сайту ===== */
   .custom-calendar-wrapper {
-    @apply rounded-lg border border-gray-200 p-4 bg-white shadow-sm;
+    border: 1px solid #efeae0;
+    border-radius: 16px;
+    padding: 20px;
+    background: #ffffff;
   }
 
   .custom-calendar-wrapper .rdp-custom {
     @apply w-full;
   }
 
-  /* Полностью забронированные даты */
-  .custom-calendar-wrapper .fully-booked-day button {
-    @apply bg-red-300 text-red-900 cursor-not-allowed pointer-events-none rounded-md relative;
-    text-decoration: line-through;
-  }
-
-  .custom-calendar-wrapper .fully-booked-day:hover button {
-    @apply bg-red-300;
-  }
-
-  /* Додатковий індикатор */
-  .custom-calendar-wrapper .fully-booked-day button::after {
-    content: "🚫";
-    position: absolute;
-    bottom: 1px;
-    right: 1px;
-    font-size: 8px;
-    line-height: 1;
-  }
-
-  /* Высокий сезон */
-  .custom-calendar-wrapper .high-season-day button {
-    @apply bg-yellow-200 text-gray-900 rounded-md;
-  }
-
-  .custom-calendar-wrapper
-    .high-season-day:not(.rdp-day_disabled):hover
-    button {
-    @apply bg-yellow-300 rounded-md;
-  }
-
-  /* Дні зі знижками в ресторані */
-  .custom-calendar-wrapper .restaurant-discount-day button {
-    @apply bg-blue-200 text-gray-900 rounded-md;
-  }
-
-  .custom-calendar-wrapper
-    .restaurant-discount-day:not(.rdp-day_disabled):hover
-    button {
-    @apply bg-blue-300 rounded-md;
-  }
-
-  /* Обычные дни */
-  .custom-calendar-wrapper
-    .rdp-day:not(.rdp-day_disabled):not(.high-season-day):not(.fully-booked-day)
-    button {
-    @apply rounded-md;
-  }
-
-  .custom-calendar-wrapper
-    .rdp-day:not(.rdp-day_disabled):not(.high-season-day):not(
-      .fully-booked-day
-    ):hover
-    button {
-    @apply bg-blue-50 rounded-md;
-  }
-
-  /* Выбранная дата */
-  .custom-calendar-wrapper .rdp-day_selected button {
-    @apply bg-blue-600 text-white font-semibold rounded-md;
-  }
-
-  /* Сегодняшняя дата */
-  .custom-calendar-wrapper
-    .rdp-day_today:not(.rdp-day_selected)
-    .rdp-day_content {
-    @apply border-2 border-blue-600;
-  }
-
-  /* Отключенные даты */
-  .custom-calendar-wrapper .rdp-day_disabled {
-    @apply opacity-50 cursor-not-allowed;
-  }
-
-  /* Кнопка дня */
-  .custom-calendar-wrapper .rdp-day {
-    @apply p-1;
-  }
-
-  .custom-calendar-wrapper .rdp-button {
-    @apply w-10 h-10;
-  }
-
-  /* Заголовок месяца */
+  /* Заголовок місяця */
   .custom-calendar-wrapper .rdp-caption {
     @apply mb-4;
   }
 
   .custom-calendar-wrapper .rdp-caption_label {
-    @apply text-lg font-semibold text-gray-900;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: #1a1a2e;
+    text-transform: capitalize;
   }
 
-  /* Навигационные кнопки */
+  /* Навігаційні кнопки */
   .custom-calendar-wrapper .rdp-nav_button {
-    @apply w-8 h-8 rounded-md hover:bg-gray-100 transition-colors;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    color: #9090aa;
+    transition:
+      background-color 0.15s,
+      color 0.15s;
   }
 
-  /* Дни недели */
+  .custom-calendar-wrapper .rdp-nav_button:hover {
+    background-color: #faf8f4;
+    color: #c9a96e;
+  }
+
+  /* Дні тижня */
   .custom-calendar-wrapper .rdp-head_cell {
-    @apply text-sm font-medium text-gray-600;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #9090aa;
   }
 
-  /* ===== Компактний режим для форм ===== */
+  /* Кнопка дня */
+  .custom-calendar-wrapper .rdp-day {
+    padding: 2px;
+  }
+
+  .custom-calendar-wrapper .rdp-button {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #1a1a2e;
+    transition: background-color 0.15s;
+  }
+
+  /* Звичайний hover */
+  .custom-calendar-wrapper
+    .rdp-day:not(.rdp-day_disabled):not(.high-season-day):not(
+      .fully-booked-day
+    ):not(.rdp-day_selected):hover
+    button {
+    background-color: #faf8f4;
+    border-radius: 8px;
+  }
+
+  /* Вибрана дата */
+  .custom-calendar-wrapper .rdp-day_selected button {
+    background-color: #c9a96e !important;
+    color: #ffffff !important;
+    font-weight: 700;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px -2px rgba(201, 169, 110, 0.45);
+  }
+
+  /* Сьогоднішня дата (не вибрана) */
+  .custom-calendar-wrapper
+    .rdp-day_today:not(.rdp-day_selected)
+    .rdp-day_content {
+    border: 2px solid #c9a96e;
+    border-radius: 6px;
+    color: #c9a96e;
+    font-weight: 600;
+  }
+
+  /* Відключені дати */
+  .custom-calendar-wrapper .rdp-day_disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  /* Повністю заброньовані дати */
+  .custom-calendar-wrapper .fully-booked-day button {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    cursor: not-allowed;
+    pointer-events: none;
+    border-radius: 8px;
+    text-decoration: line-through;
+    position: relative;
+  }
+
+  .custom-calendar-wrapper .fully-booked-day button::after {
+    content: "🚫";
+    position: absolute;
+    bottom: 1px;
+    right: 1px;
+    font-size: 7px;
+    line-height: 1;
+  }
+
+  /* Високий сезон — тепло-золотий тон */
+  .custom-calendar-wrapper .high-season-day button {
+    background-color: rgba(201, 169, 110, 0.18);
+    color: #1a1a2e;
+    border-radius: 8px;
+  }
+
+  .custom-calendar-wrapper
+    .high-season-day:not(.rdp-day_disabled):not(.rdp-day_selected):hover
+    button {
+    background-color: rgba(201, 169, 110, 0.32);
+  }
+
+  /* Знижка в ресторані — тихий navy-тон */
+  .custom-calendar-wrapper .restaurant-discount-day button {
+    background-color: rgba(15, 52, 96, 0.07);
+    color: #1a1a2e;
+    border-radius: 8px;
+  }
+
+  .custom-calendar-wrapper
+    .restaurant-discount-day:not(.rdp-day_disabled):not(.rdp-day_selected):hover
+    button {
+    background-color: rgba(15, 52, 96, 0.14);
+  }
+
+  /* ===== Компактний режим ===== */
   .custom-calendar-wrapper.compact-mode {
-    @apply p-2 border-0 shadow-none;
+    padding: 12px;
+    border: none;
+    border-radius: 16px;
+    box-shadow: none;
   }
 
   .custom-calendar-wrapper.compact-mode .rdp-button {
-    @apply w-8 h-8 text-sm;
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+
+  .custom-calendar-wrapper.compact-mode .rdp-chevron {
+    fill: #9090aa;
   }
 
   .custom-calendar-wrapper.compact-mode .rdp-caption {
-    @apply mb-2;
-  }
-
-  .custom-calendar-wrapper.compact-mode .rdp-caption_label {
-    @apply text-base;
+    margin-bottom: 8px;
   }
 
   .custom-calendar-wrapper.compact-mode .rdp-nav_button {
-    @apply w-7 h-7;
+    width: 26px;
+    height: 26px;
   }
 
   .custom-calendar-wrapper.compact-mode .calendar-legend {
-    @apply mt-2 gap-2 text-xs;
+    @apply mt-2 gap-1.5 text-xs;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family:
+      var(--font-display), "Cormorant Garamond", "Times New Roman", serif;
+  }
+
+  .container-page {
+    @apply max-w-page mx-auto px-6 md:px-16;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-3 text-[11px] tracking-[0.32em] text-gold uppercase font-medium;
+  }
+
+  .eyebrow::before {
+    content: "";
+    @apply w-8 h-px bg-gold;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center gap-2 text-[13px] px-7 py-4 bg-gold text-ink rounded-full font-semibold hover:bg-gold-light transition-colors;
+  }
+
+  .btn-ghost-light {
+    @apply inline-flex items-center gap-2 text-[13px] px-7 py-4 border border-white/25 text-white rounded-full hover:bg-white/5 hover:border-white/40 transition-colors;
+  }
+
+  .btn-dark {
+    @apply inline-flex items-center gap-2 text-[12px] px-[22px] py-[11px] bg-ink text-white rounded-full tracking-[0.05em] hover:bg-navy transition-colors;
   }
 }

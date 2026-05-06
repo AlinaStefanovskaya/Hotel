@@ -1,136 +1,403 @@
-"use client";
+import type { Metadata } from "next";
 
-import Head from "next/head";
+import Image from "next/image";
+import Link from "next/link";
+import {
+  Award,
+  Heart,
+  MapPin,
+  Sparkles,
+  Phone,
+  Mail,
+  Clock,
+  ArrowRight,
+  Star,
+} from "lucide-react";
 
-import AboutHeroSection from "@/components/About/AboutHeroSection";
-import Container from "@/components/Container";
-import Stats from "@/components/Home/Stats";
+import PageHero from "@/components/PageHero";
+import { designImages } from "@/lib/design-images";
+
+export const metadata: Metadata = {
+  title: "Про нас — Volya Hotel Odesa",
+  description:
+    "Історія готелю Volya в серці Аркадії: філософія гостинності, команда та атмосфера приморської Одеси.",
+};
+
+const STATS = [
+  { value: "15+", label: "років досвіду" },
+  { value: "12", label: "авторських номерів" },
+  { value: "2K+", label: "гостей щороку" },
+  { value: "4.9", label: "середній рейтинг", icon: Star },
+];
+
+const TIMELINE = [
+  {
+    year: "2010",
+    title: "Початок історії",
+    text: "Родина Воля придбала старовинну садибу та почала реставрацію — три роки роботи з протиаварійною документацією.",
+  },
+  {
+    year: "2013",
+    title: "Перші 6 номерів",
+    text: "Готель запрацював. Камерний рівень обслуговування і персональний сервіс — ключове наше завдання.",
+  },
+  {
+    year: "2018",
+    title: "Ресторан і SPA",
+    text: "Розширились до 12 номерів, відкрили ресторан з авторською кухнею та SPA-зону.",
+  },
+  {
+    year: "2024",
+    title: "Boutique Award",
+    text: "Здобули перше «Boutique Hotel of the Year» від Української Готельної Асоціації. Тримаємо рейтинг 4.9.",
+  },
+];
+
+const VALUES = [
+  {
+    icon: Heart,
+    title: "Гостинність",
+    text: "Кожен гість — частина нашої історії. Ми пам'ятаємо імена й деталі.",
+  },
+  {
+    icon: Sparkles,
+    title: "Увага до дрібниць",
+    text: "Від м'якості рушників до температури кави на сніданок.",
+  },
+  {
+    icon: MapPin,
+    title: "Локація",
+    text: "Ліве крило Аркадії — 3 хвилини до моря й серця нічного життя.",
+  },
+  {
+    icon: Award,
+    title: "Якість",
+    text: "Європейський рівень сервісу з душею одеського дому.",
+  },
+];
+
+const TEAM = [
+  { name: "Анна Воля", role: "Засновниця", image: "/images/about_2.png" },
+  {
+    name: "Михайло Воля",
+    role: "Управляючий партнер",
+    image: "/images/about_3.png",
+  },
+  {
+    name: "Олександр Молчанов",
+    role: "Шеф-кухар",
+    image: "/images/restorant_1.jpg",
+  },
+  {
+    name: "Олена Карась",
+    role: "Head of Guest Experience",
+    image: "/images/about_4.png",
+  },
+];
 
 export default function AboutPage() {
   return (
-    <>
-      <Head>
-        <title>Про нас — команда В.О.Л.Я.</title>
-        <meta
-          content="Дізнайтеся про нашу місію, цінності та історію створення бренду «В.О.Л.Я.» — людей, які роблять якість і гостинність понад усе."
-          name="description"
-        />
-      </Head>
-
-      <AboutHeroSection />
-
-      <Stats
-        className=" bg-gray-500 py-[25px]"
-        data={[
-          { label: "Років досвіду", value: 12 },
-          { label: "Співробітників у команді", value: 60 },
-          { label: "Реалізованих проєктів", value: 75 },
-        ]}
+    <main className="bg-[#FAF8F4]">
+      {/* PageHero — ОРИГІНАЛЬНИЙ, не чіпаємо */}
+      <PageHero
+        crumbs={[{ label: "Головна", href: "/" }, { label: "Про Volya Hotel" }]}
+        description="Бутик-готель у самому серці Аркадії, де приморська Одеса зустрічається з європейським комфортом."
+        image={designImages.aboutHero}
+        title="Про Volya Hotel"
       />
 
-      <Container className="py-12 space-y-6 text-gray-700 text-base leading-relaxed">
-        <p>
-          Ми— це згуртована команда професіоналів, яка щоденно працює над тим,
-          щоб створювати незабутній сервіс і найкращий досвід для наших гостей.
-          Почавши свій шлях як невеликий стартап із кількох ентузіастів, ми
-          поступово перетворилися на міцну дружню організацію, де кожен
-          співробітник привносить свої унікальні знання та талант.
-        </p>
-
-        <p>
-          У нашій команді ви зустрінете креативних шеф-кухарів, які постійно
-          експериментують зновими рецептами, уважних менеджерів, які завжди
-          готові зробити ваше перебування максимально комфортним, а також
-          привітних працівників, що щиро дбають про кожного гостя.
-        </p>
-
-        <div>
-          <h3 className="font-semibold mb-2">Наші основні цінності:</h3>
-          <ul className="list-disc list-inside space-y-1">
-            <li>
-              <b>Якість</b> — ми завжди обираємо найкращі продукти та послуги,
-              щоб забезпечити бездоганний результат.
-            </li>
-            <li>
-              <b>Інновації</b> — ми небоїмося впроваджувати нові ідеї та
-              рішення, роблячи ваш відпочинок сучасним і приємним.
-            </li>
-            <li>
-              <b>Людяність</b> — кожен гість для нас особливий, тому ми завжди
-              допоможемо і подбаємо про ваш комфорт.
-            </li>
-          </ul>
+      {/* Manifesto */}
+      <section className="px-4 py-24 sm:py-32">
+        <div className="mx-auto max-w-3xl text-center">
+          <p className="font-display text-2xl leading-relaxed text-[#1A1A2E] sm:text-3xl md:text-4xl">
+            Ми не намагаємось бути{" "}
+            <span className="font-display italic text-[#C9A96E]">
+              найбільшими
+            </span>
+            . Ми намагаємось бути{" "}
+            <span className="font-display italic text-[#C9A96E]">
+              найуважнішими
+            </span>{" "}
+            — щоб кожен ваш приїзд відчувався як повернення додому, тільки
+            кращим.
+          </p>
+          <div className="mt-8 flex items-center justify-center gap-3 text-sm text-[#1A1A2E]/60">
+            <span className="h-px w-6 bg-[#1A1A2E]/20" />
+            <span className="uppercase tracking-wider">
+              Анна Воля · засновниця
+            </span>
+            <span className="h-px w-6 bg-[#1A1A2E]/20" />
+          </div>
         </div>
+      </section>
 
-        <p>
-          Завітайте до нас і переконайтеся самі: у «В[/\]Я» завжди тепло,
-          затишно й привітно!
-        </p>
+      {/* Dark stats strip */}
+      <section className="bg-[#1A1A2E] px-4 py-16">
+        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 md:grid-cols-4">
+          {STATS.map((s) => {
+            const Icon = s.icon;
 
-        {/* Спеціальні пропозиції */}
-        <div className="rounded-lg bg-gradient-to-r from-blue-50 to-blue-100 p-6 border border-blue-200">
-          <h3 className="font-semibold mb-4 text-xl text-gray-800 flex items-center gap-2">
-            <i className="ri-percent-line text-2xl text-blue-600" />
-            Спеціальні пропозиції в ресторані
-          </h3>
-          <div className="space-y-3">
-            <p className="text-gray-700">
-              Ми раді запропонувати вам чудову можливість насолодитися нашою
-              вишуканою кухнею за особливими цінами!
+            return (
+              <div key={s.label} className="text-center">
+                <div className="flex items-center justify-center gap-2 font-display text-4xl text-[#C9A96E] sm:text-5xl">
+                  {s.value}
+                  {Icon && <Icon className="h-6 w-6 fill-[#C9A96E]" />}
+                </div>
+                <div className="mt-2 text-xs uppercase tracking-[0.2em] text-white/60">
+                  {s.label}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Timeline */}
+      <section className="px-4 py-24">
+        <div className="mx-auto max-w-5xl">
+          <div className="mb-16 text-center">
+            <h2 className="font-display text-4xl text-[#1A1A2E] sm:text-5xl">
+              Як починалась{" "}
+              <span className="font-display italic text-[#C9A96E]">
+                В.О.Л.Я.
+              </span>
+            </h2>
+            <p className="mt-3 text-sm text-[#1A1A2E]/60">
+              Чотирнадцять років шляху — від першого каменю до визнання
             </p>
-            <div className="rounded-lg bg-white p-4 shadow-sm">
-              <p className="text-lg font-semibold text-blue-600 mb-2">
-                🎉 Знижка 50% на меню в ресторані
-              </p>
-              <p className="text-gray-700">
-                Кожного місяця в <b>перший вівторок, середу та четвер</b> ви
-                можете скористатися знижкою 50% на все меню нашого ресторану. Це
-                чудова нагода спробувати наші авторські страви за вигідною
-                ціною!
-              </p>
+          </div>
+
+          <div className="relative">
+            <div className="absolute left-1/2 top-0 hidden h-full w-px -translate-x-1/2 bg-[#EFEAE0] md:block" />
+            <div className="space-y-12">
+              {TIMELINE.map((item, i) => (
+                <div
+                  key={item.year}
+                  className={`relative grid gap-6 md:grid-cols-2 md:gap-16 ${
+                    i % 2 === 1 ? "md:[&>*:first-child]:order-2" : ""
+                  }`}
+                >
+                  <div className={i % 2 === 0 ? "md:text-right" : ""}>
+                    <div className="font-display text-5xl text-[#C9A96E]">
+                      {item.year}
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="mb-2 font-display text-2xl text-[#1A1A2E]">
+                      {item.title}
+                    </h3>
+                    <p className="text-sm leading-relaxed text-[#1A1A2E]/60">
+                      {item.text}
+                    </p>
+                  </div>
+                  <div className="absolute left-1/2 top-2 hidden h-3 w-3 -translate-x-1/2 rounded-full bg-[#C9A96E] ring-4 ring-[#FAF8F4] md:block" />
+                </div>
+              ))}
             </div>
-            <p className="text-sm text-gray-600 italic">
-              * Бронювання столика рекомендується. Знижка не поширюється на
-              алкогольні напої.
+          </div>
+        </div>
+      </section>
+
+      {/* Values */}
+      <section className="bg-white px-4 py-24">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-12">
+            <h2 className="max-w-2xl font-display text-4xl text-[#1A1A2E] sm:text-5xl">
+              Чотири речі, які для нас{" "}
+              <span className="font-display italic text-[#C9A96E]">
+                принципові
+              </span>
+            </h2>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {VALUES.map((v) => {
+              const Icon = v.icon;
+
+              return (
+                <div
+                  key={v.title}
+                  className="group rounded-2xl border border-[#EFEAE0] bg-[#FAF8F4] p-8 transition-all hover:border-[#C9A96E] hover:shadow-lg"
+                >
+                  <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-full bg-white ring-1 ring-[#EFEAE0] transition-colors group-hover:bg-[#C9A96E] group-hover:ring-[#C9A96E]">
+                    <Icon className="h-5 w-5 text-[#C9A96E] transition-colors group-hover:text-white" />
+                  </div>
+                  <h3 className="mb-3 font-display text-xl text-[#1A1A2E]">
+                    {v.title}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-[#1A1A2E]/60">
+                    {v.text}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Team */}
+      <section className="px-4 py-24">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-12">
+            <h2 className="font-display text-4xl text-[#1A1A2E] sm:text-5xl">
+              Команда, яку ви{" "}
+              <span className="font-display italic text-[#C9A96E]">
+                зустрінете
+              </span>
+            </h2>
+            <p className="mt-3 max-w-xl text-sm text-[#1A1A2E]/60">
+              Невелика команда — кожен бачить себе власником справи. Тут немає
+              байдужих.
             </p>
           </div>
-        </div>
 
-        <div>
-          <h3 className="font-semibold mb-2">Контактна інформація:</h3>
-          <p>
-            Телефон:{" "}
-            <a className="underline" href="tel:+380661927167">
-              +380(66)1927167
-            </a>
-          </p>
-          <p>
-            Email:
-            <a className="underline" href="mailto:info@ourhotel.com">
-              reception@volyahotel.com
-            </a>
-          </p>
-          <p>
-            Адреса: вул.Аркадія, Ліве крило2/1, Одеса, Одеська область, Україна
-          </p>
-        </div>
-
-        <div className="mt-8">
-          <h3 className="font-semibold mb-4">Наше розташування:</h3>
-          <div className="w-full h-[400px] rounded-lg overflow-hidden shadow-lg">
-            <iframe
-              allowFullScreen
-              height="100%"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2748.8762785472673!2d30.753891776803764!3d46.43544767111721!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40c6318a4a39f0f7%3A0x6e7e6f7a0e4b0a8e!2z0LLRg9C7LiDQkNGA0LrQsNC00ZbRjywg0J7QtNC10YHQsCA2NTAwOSwg0KPQutGA0LDRl9C90LA!5e0!3m2!1suk!2suk!4v1698337200000!5m2!1suk!2suk"
-              style={{ border: 0 }}
-              title="Карта розташування готелю В.О.Л.Я."
-              width="100%"
-            />
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {TEAM.map((m) => (
+              <div key={m.name} className="group">
+                <div className="relative mb-4 aspect-[3/4] overflow-hidden rounded-2xl bg-[#EFEAE0]">
+                  <Image
+                    fill
+                    alt={m.name}
+                    className="object-cover grayscale transition-all duration-500 group-hover:grayscale-0 group-hover:scale-105"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    src={m.image}
+                  />
+                </div>
+                <h3 className="font-display text-lg text-[#1A1A2E]">
+                  {m.name}
+                </h3>
+                <p className="mt-1 text-xs uppercase tracking-wider text-[#C9A96E]">
+                  {m.role}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
-      </Container>
-    </>
+      </section>
+
+      {/* Final: location + contact */}
+      <section className="px-4 pb-24">
+        <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-2">
+          {/* Location image card */}
+          <div className="relative overflow-hidden rounded-2xl">
+            <div className="relative aspect-[4/3] lg:aspect-auto lg:h-full lg:min-h-[420px]">
+              <Image
+                fill
+                alt="Одеська обл., бухта"
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                src="/images/about_5.png"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A2E]/90 via-[#1A1A2E]/30 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-8">
+                <div className="mb-3 flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-[#C9A96E]">
+                  <MapPin className="h-3.5 w-3.5" />
+                  Visit Us
+                </div>
+                <h3 className="mb-2 font-display text-3xl text-white">
+                  Одеська обл., бухта
+                </h3>
+                <p className="mb-6 max-w-sm text-sm leading-relaxed text-white/70">
+                  45 хвилин від центру Одеси. Тихий приморський куточок, далеко
+                  від міського шуму.
+                </p>
+                <a
+                  className="inline-flex items-center gap-2 border-b border-white/40 pb-1 text-sm text-white transition-colors hover:border-[#C9A96E] hover:text-[#C9A96E]"
+                  href="https://www.google.com/maps?q=Аркадія,+Одеса,+Україна"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  Переглянути на картах
+                  <ArrowRight className="h-4 w-4" />
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Contact card */}
+          <div className="rounded-2xl border border-[#EFEAE0] bg-white p-8 sm:p-10">
+            <div className="mb-2 flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-[#C9A96E]">
+              <Clock className="h-3.5 w-3.5" />
+              {"Зв'яжіться"}
+            </div>
+            <h3 className="mb-3 font-display text-3xl text-[#1A1A2E]">
+              Reception{" "}
+              <span className="font-display italic text-[#C9A96E]">24/7</span>
+            </h3>
+            <p className="mb-8 text-sm text-[#1A1A2E]/60">
+              Ви говорите з менеджером готелю напряму 24 години — і ніколи з
+              ботами.
+            </p>
+
+            <div className="space-y-1">
+              <ContactRow
+                href="tel:+380661927167"
+                icon={Phone}
+                label="Телефон"
+                value="+380 66 192 71 67"
+              />
+              <ContactRow
+                href="mailto:reception@volyahotel.com"
+                icon={Mail}
+                label="Email"
+                value="reception@volyahotel.com"
+              />
+              <ContactRow
+                last
+                icon={MapPin}
+                label="Адреса"
+                value="Одеса, Україна"
+              />
+            </div>
+
+            <Link
+              className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#1A1A2E] px-8 py-4 text-sm font-medium text-white transition-colors hover:bg-[#C9A96E]"
+              href="/rooms"
+            >
+              Забронювати номер
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}
+
+function ContactRow({
+  icon: Icon,
+  label,
+  value,
+  href,
+  last,
+}: {
+  icon: typeof Phone;
+  label: string;
+  value: string;
+  href?: string;
+  last?: boolean;
+}) {
+  const content = (
+    <div
+      className={`flex items-start gap-4 py-4 ${last ? "" : "border-b border-[#EFEAE0]"}`}
+    >
+      <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#FAF8F4]">
+        <Icon className="h-4 w-4 text-[#C9A96E]" />
+      </div>
+      <div className="flex-1">
+        <div className="text-xs uppercase tracking-wider text-[#1A1A2E]/50">
+          {label}
+        </div>
+        <div className="text-sm font-medium text-[#1A1A2E]">{value}</div>
+      </div>
+    </div>
+  );
+
+  return href ? (
+    <a className="block transition-colors" href={href}>
+      {content}
+    </a>
+  ) : (
+    content
   );
 }

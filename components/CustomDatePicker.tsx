@@ -16,6 +16,8 @@ interface CustomDatePickerProps {
   minValue?: CalendarDateTime;
   isInvalid?: boolean;
   className?: string;
+  /** Конкретнi дiапазони для блокування дат (наприклад, заброньованi дати конкретного номера) */
+  disabledRanges?: { from: string; to: string }[];
 }
 
 export default function CustomDatePicker({
@@ -26,6 +28,7 @@ export default function CustomDatePicker({
   minValue,
   isInvalid,
   className = "",
+  disabledRanges,
 }: CustomDatePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -126,9 +129,10 @@ export default function CustomDatePicker({
 
       {/* Календар у попапі */}
       {isOpen && (
-        <div className="absolute top-full left-0 mt-1 z-50 bg-white shadow-lg rounded-lg border border-gray-200">
+        <div className="absolute top-full left-0 mt-2 z-50 bg-white rounded-2xl border border-[#EFEAE0] shadow-[0_16px_48px_-12px_rgba(15,52,96,0.20)]">
           <CustomCalendar
             compact
+            disabledRanges={disabledRanges}
             fromDate={minDate}
             selected={selectedDate}
             toDate={new Date(2030, 11, 31)}

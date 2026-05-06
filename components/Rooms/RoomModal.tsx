@@ -48,7 +48,7 @@ export default function RoomModal({ room, nights, isOpen, onClose }: Props) {
   }
 
   const base = typeof window === "undefined" ? "" : window.location.search;
-  const bookUrl = `/contacts${base}&room=${room._id}&price=${total}`;
+  const bookUrl = `/booking${base}&room=${room._id}&price=${total}`;
 
   return (
     <Modal

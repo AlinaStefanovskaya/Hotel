@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import Container from "@/components/Container";
-import imgObj from "@/public/images/utils";
+import { aboutImages, restaurantImages } from "@/lib/images";
 import { title, description } from "@/components/primitives";
 
 export default function InfoBlocks() {
@@ -19,7 +19,7 @@ export default function InfoBlocks() {
               priority
               alt="Ресторан при готелі"
               className="object-cover"
-              src={imgObj.restorant1}
+              src={restaurantImages[1]}
             />
           </div>
 
@@ -53,7 +53,7 @@ export default function InfoBlocks() {
               priority
               alt="Про нас"
               className="object-cover"
-              src={imgObj.about1}
+              src={aboutImages.about1}
             />
           </div>
 

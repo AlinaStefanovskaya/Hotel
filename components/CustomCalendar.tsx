@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { DayPicker } from "react-day-picker";
 import { uk } from "date-fns/locale";
+import { parseISO } from "date-fns";
 
 import "react-day-picker/dist/style.css";
 import { getDateType, isRestaurantDiscountDay } from "@/lib/calendar-utils";
@@ -11,6 +12,8 @@ interface CustomCalendarProps {
   selected?: Date | null;
   onSelect?: (date: Date | undefined) => void;
   disabled?: Date | Date[];
+  /** Конкретнi заблокованi дiапазони (наприклад, бронювання конкретного номера) */
+  disabledRanges?: { from: string; to: string }[];
   className?: string;
   mode?: "single" | "range";
   fromDate?: Date; // Мінімальна доступна дата
@@ -22,6 +25,7 @@ export default function CustomCalendar({
   selected,
   onSelect,
   disabled,
+  disabledRanges,
   className = "",
   mode = "single",
   fromDate,
@@ -63,7 +67,22 @@ export default function CustomCalendar({
       if (dateToCheck < minDate) return true;
     }
 
-    // 3. Блокуємо повністю заброньовані дати
+    // 3. Якщо передані конкретнi дiапазони (для конкретного номера) — використовуємо їх
+    if (disabledRanges && disabledRanges.length > 0) {
+      for (const range of disabledRanges) {
+        const from = parseISO(range.from);
+        const to = parseISO(range.to);
+
+        from.setHours(0, 0, 0, 0);
+        to.setHours(0, 0, 0, 0);
+        // Блокуємо дати [from, to) — дата to є можливою датою виселення
+        if (dateToCheck >= from && dateToCheck < to) return true;
+      }
+
+      return false;
+    }
+
+    // 4. Fallback: блокуємо повністю заброньовані дати (глобально)
     if (!calendarData) return false;
 
     return (
@@ -132,30 +151,39 @@ export default function CustomCalendar({
         toDate={toDate}
         onSelect={onSelect}
       />
-      {/* Завжди показуємо легенду */}
+      {/* Легенда */}
       <div
-        className={`calendar-legend ${compact ? "mt-3" : "mt-4"} flex flex-col gap-2 ${compact ? "text-xs" : "text-sm"}`}
+        className={`calendar-legend ${compact ? "mt-3" : "mt-5"} flex flex-col gap-2 border-t border-[#EFEAE0] ${compact ? "pt-2 text-xs" : "pt-4 text-[12px]"}`}
       >
         <div className="flex items-center gap-2">
           <div
-            className="w-3 h-3 rounded bg-red-300 opacity-80 flex items-center justify-center"
-            style={{ fontSize: "6px" }}
+            className="w-3 h-3 rounded flex items-center justify-center shrink-0"
+            style={{ backgroundColor: "#fee2e2", fontSize: "6px" }}
           >
             🚫
           </div>
-          <span className="text-gray-700">Зайнято</span>
+          <span className="text-[#9090AA]">Зайнято</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded bg-yellow-200" />
-          <span className="text-gray-700">Високий сезон +15%</span>
+          <div
+            className="w-3 h-3 rounded shrink-0"
+            style={{ backgroundColor: "rgba(201,169,110,0.25)" }}
+          />
+          <span className="text-[#9090AA]">
+            Високий сезон{" "}
+            <span className="text-[#C9A96E] font-medium">+15%</span>
+          </span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded bg-blue-200" />
-          <span className="text-gray-700">Знижка 50% на меню в ресторані</span>
+          <div
+            className="w-3 h-3 rounded shrink-0"
+            style={{ backgroundColor: "rgba(15,52,96,0.10)" }}
+          />
+          <span className="text-[#9090AA]">Знижка на меню ресторану</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded bg-white border border-gray-300" />
-          <span className="text-gray-700">Звичайна ціна</span>
+          <div className="w-3 h-3 rounded shrink-0 border border-[#EFEAE0]" />
+          <span className="text-[#9090AA]">Звичайна ціна</span>
         </div>
       </div>
     </div>

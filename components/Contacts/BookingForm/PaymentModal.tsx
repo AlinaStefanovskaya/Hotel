@@ -54,13 +54,13 @@ export default function PaymentModal({
         <ModalHeader className="flex flex-col gap-1">Онлайн оплата</ModalHeader>
         <ModalBody>
           <div className="space-y-4">
-            <div className="bg-gradient-to-br from-black-900 to-black-800 p-6 rounded-xl text-white">
+            <div className="bg-black from-black-900 to-black-800 p-6 rounded-xl text-white">
               <div className="flex items-center gap-2 mb-4">
                 <svg className="w-8 h-8" fill="none" viewBox="0 0 32 32">
                   <rect fill="white" height="32" rx="6" width="32" />
                   <path
                     d="M8 12h16M8 16h16M8 20h10"
-                    stroke="currentColor"
+                    stroke="#000"
                     strokeWidth="2"
                   />
                 </svg>

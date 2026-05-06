@@ -1,261 +1,202 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  Navbar,
-  NavbarBrand,
-  NavbarContent,
-  NavbarItem,
-  Button,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-} from "@heroui/react";
+import { Menu, X, ChevronDown } from "lucide-react";
 
-import imgObj from "@/public/images/utils";
-import Container from "@/components/Container";
+import Logo from "@/components/Logo";
 
-const MENU = [
-  { href: "/", label: "Головна", icon: "ri-home-line" },
-  { href: "/rooms", label: "Номери", icon: "ri-hotel-bed-line" },
+type SubLink = { href: string; title: string; subtitle: string };
+
+const restaurantLinks: SubLink[] = [
+  { href: "/restaurant", title: "Ресторан", subtitle: "Огляд ресторану" },
+  { href: "/restaurant/menu", title: "Меню", subtitle: "Авторські страви" },
   {
-    href: "/restaurant",
-    label: "Ресторан",
-    icon: "ri-restaurant-2-line",
-    submenu: [
-      { href: "/restaurant/menu", label: "Меню", icon: "ri-book-2-line" },
-      {
-        href: "/restaurant/booking",
-        label: "Забронювати ресторан",
-        icon: "ri-calendar-check-line",
-      },
-      {
-        href: "/restaurant/delivery",
-        label: "Доставка до номера",
-        icon: "ri-e-bike-2-line",
-      },
-    ],
+    href: "/restaurant/booking",
+    title: "Бронь столика",
+    subtitle: "Резерв вечері",
   },
-  { href: "/about", label: "Про нас", icon: "ri-information-line" },
-  { href: "/contacts", label: "Бронюваня", icon: "ri-contacts-book-line" },
+  {
+    href: "/restaurant/delivery",
+    title: "Доставка",
+    subtitle: "У номер / до дверей",
+  },
+];
+
+const navLinks = [
+  { href: "/", label: "Головна" },
+  { href: "/rooms", label: "Номери" },
+  // "Ресторан" рендеримо окремо (з dropdown)
+  { href: "/about", label: "Про нас" },
 ];
 
 export default function Header() {
+  const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const [mobileSubmenuOpen, setMobileSubmenuOpen] = useState<string | null>(
-    null
-  );
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Закриваємо дропдаун при кліку поза ним
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setOpenDropdown(null);
-      }
-    }
-
-    if (openDropdown) {
-      document.addEventListener("mousedown", handleClickOutside);
-
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-      };
-    }
-  }, [openDropdown]);
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
-    <Container>
-      {/* Фиксированный top-navbar */}
-      <Navbar className="fixed inset-x-0 top-0 z-30 border-b bg-white/80 backdrop-blur-md">
-        <NavbarBrand>
-          <Link
-            className="text-xl font-bold tracking-tight text-primary"
-            href="/"
-          >
-            <Image alt="logo" className="w-12" src={imgObj.logo} />
-          </Link>
-        </NavbarBrand>
+    <header className="fixed top-0 left-0 right-0 z-50 bg-[#1A1A2E] backdrop-blur border-b border-[hsl(var(--gold))]/20">
+      <div className="container mx-auto px-4 h-20 flex items-center justify-between">
+        {/* Logo */}
+        <Link href="/">
+          <Logo size="sm" variant="light" />
+        </Link>
 
-        <NavbarContent as="ul" className="hidden gap-6 md:flex">
-          {MENU.map(({ href, label, icon, submenu }) => {
-            const active =
-              pathname === href ||
-              (submenu &&
-                submenu.some((item) => pathname === item.href));
+        {/* Desktop nav */}
+        <nav className="hidden lg:flex items-center gap-8">
+          {navLinks.slice(0, 2).map((l) => (
+            <Link
+              key={l.href}
+              className={`text-sm uppercase tracking-wider transition-colors ${
+                isActive(l.href)
+                  ? "text-[hsl(var(--gold))]"
+                  : "text-white hover:text-[hsl(var(--gold))]"
+              }`}
+              href={l.href}
+            >
+              {l.label}
+            </Link>
+          ))}
 
-            return (
-              <NavbarItem key={href} as="li" className="relative list-none">
-                <div ref={submenu ? dropdownRef : null}>
-                  {!submenu ? (
-                    <Link
-                      className="flex items-center gap-1 text-sm font-medium text-gray-700 hover:text-primary"
-                      href={href}
-                    >
-                      <i className={`${icon} text-lg`} />
-                      {label}
-                    </Link>
-                  ) : (
-                    <button
-                      className="flex items-center gap-1 text-sm font-medium text-gray-700 hover:text-primary"
-                      onClick={() =>
-                        setOpenDropdown(openDropdown === href ? null : href)
-                      }
-                    >
-                      <i className={`${icon} text-lg`} />
-                      {label}
-                      <i
-                        className={`ri-arrow-down-s-line text-base transition-transform ${
-                          openDropdown === href ? "rotate-180" : ""
-                        }`}
-                      />
-                    </button>
-                  )}
+          {/* Restaurant dropdown */}
+          <div className="relative group">
+            <button
+              className={`flex items-center gap-1 text-sm uppercase tracking-wider transition-colors ${
+                pathname.startsWith("/restaurant")
+                  ? "text-[hsl(var(--gold))]"
+                  : "text-white hover:text-[hsl(var(--gold))]"
+              }`}
+            >
+              Ресторан
+              <ChevronDown className="h-4 w-4 transition-transform group-hover:rotate-180" />
+            </button>
 
-                  <AnimatePresence>
-                    {active && (
-                      <motion.span
-                        animate={{ opacity: 1, scaleX: 1 }}
-                        className="absolute -bottom-1 left-0 right-0 h-[2px] rounded bg-primary"
-                        exit={{ opacity: 0, scaleX: 0 }}
-                        initial={{ opacity: 0, scaleX: 0 }}
-                        layoutId="underline"
-                        transition={{ duration: 0.2 }}
-                      />
-                    )}
-                  </AnimatePresence>
-
-                  {/* Dropdown menu */}
-                  {submenu && openDropdown === href && (
-                    <motion.div
-                      animate={{ opacity: 1, y: 0 }}
-                      className="absolute left-0 top-full mt-2 z-50"
-                      exit={{ opacity: 0, y: -10 }}
-                      initial={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <div className="min-w-[220px] rounded-lg border bg-white shadow-lg">
-                        <Link
-                          className="flex items-center gap-2 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-primary first:rounded-t-lg border-b"
-                          href={href}
-                          onClick={() => setOpenDropdown(null)}
-                        >
-                          <i className={`${icon} text-base`} />
-                          {label}
-                        </Link>
-                        {submenu.map((item) => (
-                          <Link
-                            key={item.href}
-                            className="flex items-center gap-2 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-primary last:rounded-b-lg"
-                            href={item.href}
-                            onClick={() => setOpenDropdown(null)}
-                          >
-                            <i className={`${item.icon} text-base`} />
-                            {item.label}
-                          </Link>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
-                </div>
-              </NavbarItem>
-            );
-          })}
-        </NavbarContent>
-
-        <Button
-          isIconOnly
-          aria-label="Відкрити меню"
-          className="md:hidden"
-          variant="light"
-          onPress={() => setOpen(true)}
-        >
-          <i className="ri-menu-line text-2xl" />
-        </Button>
-      </Navbar>
-
-      {/* Модальне меню */}
-      <Modal isOpen={open} placement="center" onOpenChange={setOpen}>
-        <ModalContent className="w-11/12 max-w-sm p-4">
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex justify-between gap-2 pb-2">
-                <span className="text-lg font-semibold">Меню</span>
-              </ModalHeader>
-              <ModalBody className="space-y-2 py-2">
-                {MENU.map(({ href, label, icon, submenu }) => (
-                  <div key={href}>
-                    {!submenu ? (
-                      <Link
-                        className="flex items-center gap-3 text-base font-medium text-gray-800 hover:text-primary py-2"
-                        href={href}
-                        onClick={onClose}
-                      >
-                        <i className={`${icon} text-xl`} />
-                        {label}
-                      </Link>
-                    ) : (
-                      <div>
-                        <button
-                          className="flex w-full items-center justify-between gap-3 text-base font-medium text-gray-800 hover:text-primary py-2"
-                          onClick={() =>
-                            setMobileSubmenuOpen(
-                              mobileSubmenuOpen === href ? null : href
-                            )
-                          }
-                        >
-                          <div className="flex items-center gap-3">
-                            <i className={`${icon} text-xl`} />
-                            {label}
-                          </div>
-                          <i
-                            className={`ri-arrow-down-s-line text-xl transition-transform ${
-                              mobileSubmenuOpen === href ? "rotate-180" : ""
-                            }`}
-                          />
-                        </button>
-                        <AnimatePresence>
-                          {mobileSubmenuOpen === href && (
-                            <motion.div
-                              animate={{ height: "auto", opacity: 1 }}
-                              className="ml-8 space-y-1 overflow-hidden"
-                              exit={{ height: 0, opacity: 0 }}
-                              initial={{ height: 0, opacity: 0 }}
-                              transition={{ duration: 0.2 }}
-                            >
-                              {submenu.map((item) => (
-                                <Link
-                                  key={item.href}
-                                  className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-primary py-2"
-                                  href={item.href}
-                                  onClick={onClose}
-                                >
-                                  <i className={`${item.icon} text-lg`} />
-                                  {item.label}
-                                </Link>
-                              ))}
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                    )}
-                  </div>
+            <div className="absolute left-1/2 -translate-x-1/2 top-full pt-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+              <div className="w-72 bg-[hsl(var(--navy))] border border-[hsl(var(--gold))]/30 shadow-2xl rounded-sm overflow-hidden">
+                {restaurantLinks.map((sub, i) => (
+                  <Link
+                    key={sub.href}
+                    className={`block px-5 py-4 transition-colors hover:bg-[hsl(var(--gold))]/10 ${
+                      i !== restaurantLinks.length - 1
+                        ? "border-b border-[hsl(var(--gold))]/15"
+                        : ""
+                    }`}
+                    href={sub.href}
+                  >
+                    <div className="text-[hsl(var(--gold))] text-sm font-medium uppercase tracking-wider">
+                      {sub.title}
+                    </div>
+                    <div className="text-white/60 text-xs mt-1">
+                      {sub.subtitle}
+                    </div>
+                  </Link>
                 ))}
-              </ModalBody>
-            </>
+              </div>
+            </div>
+          </div>
+
+          {navLinks.slice(2).map((l) => (
+            <Link
+              key={l.href}
+              className={`text-sm uppercase tracking-wider transition-colors ${
+                isActive(l.href)
+                  ? "text-[hsl(var(--gold))]"
+                  : "text-white hover:text-[hsl(var(--gold))]"
+              }`}
+              href={l.href}
+            >
+              {l.label}
+            </Link>
+          ))}
+        </nav>
+
+        {/* CTA → бронювання номера */}
+        <Link
+          className="hidden lg:inline-flex px-6 py-2 border border-[hsl(var(--gold))] text-[hsl(var(--gold))] text-sm uppercase tracking-wider hover:bg-[hsl(var(--gold))] hover:text-[hsl(var(--navy))] transition-colors"
+          href="/booking"
+        >
+          Бронювати
+        </Link>
+
+        {/* Mobile burger */}
+        <button
+          aria-label="Toggle menu"
+          className="lg:hidden text-white"
+          onClick={() => setMobileOpen((v) => !v)}
+        >
+          {mobileOpen ? (
+            <X className="h-6 w-6" />
+          ) : (
+            <Menu className="h-6 w-6" />
           )}
-        </ModalContent>
-      </Modal>
-    </Container>
+        </button>
+      </div>
+
+      {/* Mobile menu */}
+      {mobileOpen && (
+        <div className="lg:hidden bg-[hsl(var(--navy))] border-t border-[hsl(var(--gold))]/20">
+          <nav className="container mx-auto px-4 py-6 flex flex-col gap-1">
+            {navLinks.slice(0, 2).map((l) => (
+              <Link
+                key={l.href}
+                className={`py-3 text-sm uppercase tracking-wider border-b border-[hsl(var(--gold))]/10 ${
+                  isActive(l.href) ? "text-[hsl(var(--gold))]" : "text-white"
+                }`}
+                href={l.href}
+                onClick={() => setMobileOpen(false)}
+              >
+                {l.label}
+              </Link>
+            ))}
+
+            <div className="py-3 border-b border-[hsl(var(--gold))]/10">
+              <div className="text-[hsl(var(--gold))] text-sm uppercase tracking-wider mb-2">
+                Ресторан
+              </div>
+              <div className="flex flex-col gap-2 pl-3">
+                {restaurantLinks.map((sub) => (
+                  <Link
+                    key={sub.href}
+                    className="text-white/80 text-sm py-1"
+                    href={sub.href}
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    {sub.title}
+                    <span className="text-white/40 text-xs ml-2">
+                      — {sub.subtitle}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {navLinks.slice(2).map((l) => (
+              <Link
+                key={l.href}
+                className={`py-3 text-sm uppercase tracking-wider border-b border-[hsl(var(--gold))]/10 ${
+                  isActive(l.href) ? "text-[hsl(var(--gold))]" : "text-white"
+                }`}
+                href={l.href}
+                onClick={() => setMobileOpen(false)}
+              >
+                {l.label}
+              </Link>
+            ))}
+
+            <Link
+              className="mt-4 px-6 py-3 border border-[hsl(var(--gold))] text-[hsl(var(--gold))] text-sm uppercase tracking-wider text-center"
+              href="/booking"
+              onClick={() => setMobileOpen(false)}
+            >
+              Бронювати
+            </Link>
+          </nav>
+        </div>
+      )}
+    </header>
   );
 }

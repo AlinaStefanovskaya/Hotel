@@ -7,17 +7,17 @@ import "swiper/css/pagination";
 import Image from "next/image";
 
 import Container from "@/components/Container";
-import imgObj from "@/public/images/utils";
+import { aboutImages } from "@/lib/images";
 import { title } from "@/components/primitives";
 
 const slides = [
-  imgObj.about1,
-  imgObj.about2,
-  imgObj.about3,
-  imgObj.about4,
-  imgObj.about5,
-  imgObj.about6,
-  imgObj.about7,
+  aboutImages.about1,
+  aboutImages.about2,
+  aboutImages.about3,
+  aboutImages.about4,
+  aboutImages.about5,
+  aboutImages.about6,
+  aboutImages.about7,
 ];
 
 export default function RestaurantHeroSection() {
@@ -32,7 +32,7 @@ export default function RestaurantHeroSection() {
           pagination={{ clickable: true }}
         >
           {slides.map((src) => (
-            <SwiperSlide key={src.src} className="relative w-full h-full">
+            <SwiperSlide key={src} className="relative w-full h-full">
               <Image
                 fill
                 priority

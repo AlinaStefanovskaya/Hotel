@@ -1,55 +1,72 @@
 // tailwind.config.js
-const { heroui } = require("@heroui/theme");
+/** @type {import('tailwindcss').Config} */
+const { heroui } = require("@heroui/react");
 
 module.exports = {
   content: [
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./config/**/*.{js,ts,jsx,tsx,mdx}",
     "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: "class",
   theme: {
-    extend: {
-      fontFamily: {
-        sans: ["var(--font-sans)"], // здесь подключаем переменную
-        // можно убрать mono, если не нужен
+    container: {
+      center: true,
+      padding: {
+        DEFAULT: "1.5rem",
+        md: "4rem",
       },
+      screens: {
+        "2xl": "1320px",
+      },
+    },
+    extend: {
       colors: {
-        blue: {
-          100: "#E3F2FD",
-          200: "#BBDEFB",
-          300: "#90CAF9",
-          400: "#64B5F6",
-          500: "#2196F3",
-          600: "#1E88E5",
-          700: "#1976D2",
-          800: "#1565C0",
-          900: "#0D47A1",
+        // Volya palette
+        cream: "#FAF8F4",
+        ink: "#1A1A2E",
+        navy: "#0F3460",
+        gold: "#C9A96E",
+        "gold-light": "#E8C98A",
+        mute: "#9090AA",
+        line: "#EFEAE0",
+        // legacy compatibility (на випадок, якщо десь у твоєму коді є text-primary)
+        primary: {
+          DEFAULT: "#1A1A2E",
+          foreground: "#FAF8F4",
         },
-        yellow: {
-          100: "#FFFDE7",
-          200: "#FFF9C4",
-          300: "#FFF59D",
-          400: "#FFF176",
-          500: "#FFEB3B",
-          600: "#FDD835",
-          700: "#FBC02D",
-          800: "#F9A825",
-          900: "#F57F17",
+      },
+      fontFamily: {
+        sans: ["var(--font-sans)", "Inter", "system-ui", "sans-serif"],
+        display: ["var(--font-display)", "'Cormorant Garamond'", "serif"],
+      },
+      maxWidth: {
+        page: "1320px",
+      },
+      boxShadow: {
+        card: "0 24px 60px -30px rgba(15,52,96,0.20)",
+        elev: "0 30px 80px -20px rgba(0,0,0,0.6)",
+        dropdown: "0 30px 70px -20px rgba(15,52,96,0.22)",
+      },
+      borderRadius: {
+        "2xl": "1rem",
+        "3xl": "1.5rem",
+      },
+      keyframes: {
+        "fade-up": {
+          "0%": { opacity: "0", transform: "translateY(8px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
         },
-        black: {
-          100: "#FFFFFF",
-          200: "#E5E5E5",
-          300: "#CCCCCC",
-          400: "#999999",
-          500: "#666666",
-          600: "#444444",
-          700: "#333333",
-          800: "#222222",
-          900: "#000000",
-        },
+      },
+      animation: {
+        "fade-up": "fade-up 0.4s ease-out both",
       },
     },
   },
-  darkMode: "class",
-  plugins: [heroui()],
+  plugins: [
+    heroui(),
+    // якщо у тебе підключений tailwindcss-animate — додай сюди:
+    // require("tailwindcss-animate"),
+  ],
 };

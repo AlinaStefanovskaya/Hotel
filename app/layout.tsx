@@ -1,21 +1,32 @@
 import "@/styles/globals.css";
-import { Metadata } from "next";
+
+import type { Metadata, Viewport } from "next";
+
 import clsx from "clsx";
 
+import { Providers } from "@/app/providers";
 import Header from "@/components/Header";
-import { Footer } from "@/components/Footer";
+import Footer from "@/components/Footer";
+import ScrollToTop from "@/components/ui/ScrollToTop";
+import { fontDisplay, fontSans } from "@/config/fonts";
 import { siteConfig } from "@/config/site";
-import { fontMontserrat } from "@/config/fonts";
 
 export const metadata: Metadata = {
   title: {
     default: siteConfig.name,
-    template: `%s - ${siteConfig.name}`,
+    template: `%s · ${siteConfig.name}`,
   },
   description: siteConfig.description,
   icons: {
     icon: "/favicon.ico",
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#FAF8F4" },
+    { media: "(prefers-color-scheme: dark)", color: "#1A1A2E" },
+  ],
 };
 
 export default function RootLayout({
@@ -25,23 +36,26 @@ export default function RootLayout({
 }) {
   return (
     <html suppressHydrationWarning lang="uk">
-      <head />
       <body
         suppressHydrationWarning
         className={clsx(
-          "min-h-screen bg-background font-sans antialiased",
-          fontMontserrat.variable
+          fontSans.variable,
+          fontDisplay.variable,
+          "min-h-screen bg-[#FAF8F4] font-sans text-[#1A1A2E] antialiased"
         )}
       >
-        <div className="flex min-h-screen flex-col overflow-hidden w-full">
-          <Header />
+        <Providers>
+          <div className="flex min-h-screen w-full flex-col overflow-hidden">
+            <Header />
 
-          <main className="flex flex-col overflow-hidden w-full">
-            {children}
-          </main>
+            <main className="flex w-full flex-col overflow-hidden">
+              {children}
+            </main>
 
-          <Footer />
-        </div>
+            <Footer />
+            <ScrollToTop />
+          </div>
+        </Providers>
       </body>
     </html>
   );

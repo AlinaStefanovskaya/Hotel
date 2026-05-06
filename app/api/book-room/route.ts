@@ -1,6 +1,6 @@
 // API для бронювання з багаторівневим захистом
 import { NextResponse } from "next/server";
-import { parseISO, isValid, isFuture } from "date-fns";
+import { parseISO, isValid, startOfDay, isBefore } from "date-fns";
 import { z } from "zod";
 
 import { sanityClient } from "@/lib/sanity";
@@ -119,9 +119,12 @@ export async function POST(req: Request) {
       );
     }
 
-    if (!isFuture(fromDate)) {
+    const today = startOfDay(new Date());
+    const startFromDate = startOfDay(fromDate);
+
+    if (isBefore(startFromDate, today)) {
       return NextResponse.json(
-        { error: "Дата заїзду має бути в майбутньому" },
+        { error: "Дата заїзду не може бути в минулому" },
         { status: 400 }
       );
     }
@@ -157,18 +160,21 @@ export async function POST(req: Request) {
       people_count: payload.people_count,
       child_count: payload.child_count,
       payment_type: payload.payment_type,
-      payment_status: payload.payment_status,
+      payment_status: "unpaid",
       room: { _type: "reference", _ref: roomId },
       status: "pending",
     });
 
     return NextResponse.json({ overlap: false, id: doc._id }, { status: 201 });
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.error("❌ Booking error:", e);
 
     // 🛡️ ЗАХИСТ 9: Не показувати деталі помилок на продакшені
     if (e instanceof Error) {
+      // eslint-disable-next-line no-console
       console.error("Error message:", e.message);
+      // eslint-disable-next-line no-console
       console.error("Error stack:", e.stack);
 
       return NextResponse.json(
@@ -192,7 +198,7 @@ export async function POST(req: Request) {
 }
 
 // 🛡️ ЗАХИСТ 10: CORS для обмеження доступу
-export async function OPTIONS(req: Request) {
+export async function OPTIONS(_req: Request) {
   return new NextResponse(null, {
     status: 200,
     headers: {

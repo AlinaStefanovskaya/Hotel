@@ -1,231 +1,252 @@
-"use client";
+import type { Metadata } from "next";
 
-import Head from "next/head";
 import Link from "next/link";
-import Container from "@/components/Container";
+import Image from "next/image";
+import {
+  Phone,
+  Clock,
+  CreditCard,
+  Package,
+  Utensils,
+  CheckCircle2,
+  BellRing,
+  Truck,
+  ArrowRight,
+} from "lucide-react";
 
-export default function RoomDeliveryPage() {
+import PageHero from "@/components/PageHero";
+import SectionHeader from "@/components/SectionHeader";
+
+export const metadata: Metadata = {
+  title: "Доставка в номер — ресторан «Воля»",
+  description:
+    "Замовлення страв ресторану «Воля» прямо у ваш номер. Доставка 30–45 хвилин, щодня 07:00–23:00.",
+};
+
+const steps = [
+  {
+    n: "01",
+    icon: BellRing,
+    title: "Зателефонуйте на reception",
+    description:
+      "Натисніть «9» на готельному телефоні або зателефонуйте +380 66 192 71 67.",
+  },
+  {
+    n: "02",
+    icon: Utensils,
+    title: "Оберіть страви з меню",
+    description:
+      "Наш персонал допоможе підібрати страви та порекомендує сезонні позиції.",
+  },
+  {
+    n: "03",
+    icon: Truck,
+    title: "Очікуйте доставку",
+    description: "Замовлення прибуде до вашого номера протягом 30–45 хвилин.",
+  },
+];
+
+const features = [
+  { icon: Clock, title: "30–45 хв", description: "середній час доставки" },
+  { icon: Package, title: "Термопак", description: "упаковка зберігає тепло" },
+  {
+    icon: CreditCard,
+    title: "Картка / готівка",
+    description: "оплата на місці",
+  },
+  { icon: Truck, title: "07:00 — 23:00", description: "доставка щодня" },
+];
+
+const benefits = [
+  "Без націнки за доставку для гостей готелю",
+  "Сніданок у ліжко — замовлення з вечора",
+  "Дитяче меню та спецдієти за запитом",
+  "Винна карта доступна для замовлення в номер",
+  "Сервірування столу та свічки на романтичну вечерю",
+];
+
+export default function DeliveryPage() {
   return (
     <>
-      <Head>
-        <title>Доставка до номера — ресторан «В.О.Л.Я.»</title>
-        <meta
-          content="Замовте доставку страв з ресторану прямо до вашого номера. Насолоджуйтесь смачною їжею у комфорті вашого номера."
-          name="description"
-        />
-      </Head>
+      <PageHero
+        crumbs={[
+          { label: "Головна", href: "/" },
+          { label: "Ресторан", href: "/restaurant" },
+          { label: "Доставка" },
+        ]}
+        description="Замовляйте страви ресторану прямо до номера."
+        image="/images/restorant_2.jpg"
+        title="Доставка"
+      />
 
-      <div className="relative h-[400px] w-full overflow-hidden bg-[url(https://img.restoclub.ru/uploads/place/d/2/4/5/d24592e793c446c5f929dfc54aad094f_w426_h278.jpg)] bg-cover bg-center">
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-black/30" />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center text-white">
-            <h1 className="mb-4 text-5xl font-bold">Доставка до номера</h1>
-            <p className="text-xl">
-              Насолоджуйтесь вишуканими стравами у комфорті вашого номера
-            </p>
+      {/* Steps */}
+      <section className="py-20 lg:py-28 bg-background">
+        <div className="container mx-auto px-4">
+          <SectionHeader
+            description="Від замовлення до сервірованого столу у вашому номері — менше години."
+            eyebrow="Як це працює"
+            title="Чотири прості кроки"
+          />
+
+          <div className="grid gap-7 lg:grid-cols-3 mt-12">
+            {steps.slice(0, 3).map(({ n, icon: Icon, title, description }) => (
+              <article
+                key={n}
+                className="relative rounded-[22px] border border-[#EFEAE0] bg-white p-8 shadow-[0_18px_48px_rgba(26,26,46,0.04)]"
+              >
+                <div className="mb-8 flex items-start justify-between">
+                  <span className="flex h-14 w-14 items-center justify-center rounded-full bg-[#1A1A2E] text-[#C9A96E]">
+                    <Icon className="h-5 w-5" strokeWidth={1.7} />
+                  </span>
+
+                  <span className="font-display text-3xl text-[#C9A96E]/35">
+                    {n}
+                  </span>
+                </div>
+
+                <h3 className="text-xl font-semibold leading-snug text-[#1A1A2E]">
+                  {title}
+                </h3>
+
+                <p className="mt-4 text-sm leading-relaxed text-[#9090AA]">
+                  {description}
+                </p>
+              </article>
+            ))}
           </div>
-        </div>
-      </div>
 
-      <Container className="py-12">
-        <div className="mx-auto max-w-4xl space-y-8">
-          <div className="text-center">
-            <h2 className="mb-4 text-3xl font-bold text-gray-800">
-              Доставка страв з ресторану до вашого номера
-            </h2>
-            <p className="text-base leading-relaxed text-gray-700">
-              Бажаєте насолодитися вишуканими стравами нашого ресторану, не
-              виходячи з номера? Ми з радістю доставимо все, що ви забажаєте!
-            </p>
-          </div>
+          <div className="mt-12 rounded-[22px] bg-[#1A1A2E] p-8 text-white md:p-10 lg:flex lg:items-center lg:justify-between">
+            <div className="flex items-start gap-6">
+              <span className="flex h-16 w-16 flex-none items-center justify-center rounded-full bg-[#C9A96E]/15 text-[#C9A96E]">
+                <BellRing className="h-6 w-6" strokeWidth={1.7} />
+              </span>
 
-          {/* Як замовити */}
-          <div className="rounded-lg border bg-white p-8 shadow-md">
-            <h3 className="mb-6 text-2xl font-semibold text-gray-800">
-              Як замовити доставку?
-            </h3>
-            <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary text-lg font-bold text-white">
-                  1
-                </div>
-                <div>
-                  <h4 className="mb-1 font-semibold text-gray-800">
-                    Зателефонуйте за внутрішнім номером
-                  </h4>
-                  <p className="text-gray-700">
-                    Знайдіть меню у вашому номері або зателефонуйте на ресепшн
-                  </p>
-                </div>
-              </div>
+              <div>
+                <p className="text-[11px] font-medium uppercase tracking-[0.36em] text-[#C9A96E]">
+                  Контактний номер
+                </p>
 
-              <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary text-lg font-bold text-white">
-                  2
-                </div>
-                <div>
-                  <h4 className="mb-1 font-semibold text-gray-800">
-                    Оберіть страви з меню
-                  </h4>
-                  <p className="text-gray-700">
-                    Наш персонал з радістю допоможе вам обрати найкращі страви
-                  </p>
-                </div>
-              </div>
+                <a
+                  className="mt-3 block font-display text-3xl text-white transition hover:text-[#E8C98A] md:text-4xl"
+                  href="tel:+380661927167"
+                >
+                  +380 66 192 71 67
+                </a>
 
-              <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary text-lg font-bold text-white">
-                  3
-                </div>
-                <div>
-                  <h4 className="mb-1 font-semibold text-gray-800">
-                    Очікуйте доставку
-                  </h4>
-                  <p className="text-gray-700">
-                    Ваше замовлення буде доставлено протягом 30-45 хвилин
-                  </p>
-                </div>
+                <p className="mt-2 text-sm text-white/60">
+                  Або наберіть «9» з готельного телефону
+                </p>
               </div>
             </div>
 
-            <div className="mt-8 rounded-lg bg-primary/10 p-6">
-              <h4 className="mb-3 flex items-center gap-2 text-xl font-semibold text-gray-800">
-                <i className="ri-phone-line text-2xl text-primary" />
-                Контактний номер
-              </h4>
-              <p className="mb-2 text-gray-700">
-                Якщо у вас виникли питання або ви хочете зробити замовлення,
-                зателефонуйте:
+            <a
+              className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#C9A96E] px-8 py-4 text-sm font-semibold text-[#1A1A2E] transition hover:bg-[#E8C98A] lg:mt-0"
+              href="tel:+380661927167"
+            >
+              Зателефонувати
+              <ArrowRight className="h-4 w-4" />
+            </a>
+          </div>
+
+          {/* Feature cards under call block */}
+          <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {features.map(({ icon: Icon, title, description }) => (
+              <div
+                key={title}
+                className="group rounded-[22px] border border-[#EFEAE0] bg-white p-6 shadow-[0_18px_48px_rgba(26,26,46,0.04)] transition-all hover:-translate-y-1 hover:border-[#C9A96E]/50 hover:shadow-[0_24px_60px_rgba(26,26,46,0.08)]"
+              >
+                <div className="mb-6 flex items-center justify-between">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#1A1A2E] text-[#C9A96E] transition-colors group-hover:bg-[#C9A96E] group-hover:text-[#1A1A2E]">
+                    <Icon className="h-5 w-5" strokeWidth={1.7} />
+                  </span>
+
+                  <span className="font-display text-2xl text-[#C9A96E]/30">
+                    •
+                  </span>
+                </div>
+
+                <h3 className="font-display text-[24px] leading-tight text-[#1A1A2E]">
+                  {title}
+                </h3>
+
+                <p className="mt-2 text-sm leading-relaxed text-[#9090AA]">
+                  {description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Benefits */}
+      <section className="py-20 lg:py-28 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <div className="relative aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl">
+              <Image
+                fill
+                alt="Доставка страв у номер"
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                src="/images/restorant_5.jpg"
+              />
+            </div>
+
+            <div>
+              <span className="text-sm uppercase tracking-[0.2em] text-primary font-medium">
+                Переваги
+              </span>
+              <h2 className="font-serif text-4xl lg:text-5xl mt-4 mb-6 leading-tight">
+                Чому гості замовляють у номер
+              </h2>
+              <p className="text-lg text-muted-foreground leading-relaxed mb-8">
+                Ми створили сервіс так, щоб ви не виходили з кімнати без
+                потреби. Сніданок у ліжко, романтична вечеря на двох чи робоча
+                кава під час дзвінка — все можливо.
               </p>
+
+              <ul className="space-y-4">
+                {benefits.map((b) => (
+                  <li key={b} className="flex items-start gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 shrink-0" />
+                    <span className="text-foreground">{b}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="bg-primary text-primary-foreground rounded-2xl p-10 lg:p-16 text-center">
+            <h2 className="font-serif text-3xl lg:text-4xl mb-4">
+              Готові замовити?
+            </h2>
+            <p className="text-primary-foreground/80 max-w-2xl mx-auto mb-8 text-lg">
+              Перегляньте меню або зателефонуйте на ресепшн — приймемо
+              замовлення з 07:00 до 23:00.
+            </p>
+            <div className="flex flex-wrap gap-4 justify-center">
+              <Link
+                className="px-8 py-4 bg-primary-foreground text-primary rounded-full hover:bg-primary-foreground/90 transition-colors font-medium"
+                href="/restaurant/menu"
+              >
+                Дивитись меню
+              </Link>
               <a
-                className="inline-flex items-center gap-2 text-2xl font-bold text-primary hover:underline"
+                className="inline-flex items-center gap-2 px-8 py-4 border border-primary-foreground/30 rounded-full hover:bg-primary-foreground/10 transition-colors font-medium"
                 href="tel:+380661927167"
               >
-                <i className="ri-phone-fill" />
-                +380 (66) 192-71-67
+                <Phone className="w-5 h-5" />
+                +38 (066) 192-71-67
               </a>
             </div>
           </div>
-
-          {/* Меню */}
-          <div className="rounded-lg bg-gray-50 p-8">
-            <h3 className="mb-6 text-center text-2xl font-semibold text-gray-800">
-              Наше меню
-            </h3>
-            <p className="mb-6 text-center text-gray-700">
-              Ознайомтеся з повним меню нашого ресторану
-            </p>
-
-            {/* Заглушки меню */}
-            <div className="grid gap-6 md:grid-cols-2">
-              {[
-                {
-                  title: "Основне меню",
-                  icon: "ri-restaurant-line",
-                  menuLink:
-                    "https://ukrainski-stravy.com.ua/wp-content/uploads/2025/03/soups.pdf",
-                },
-                {
-                  title: "Напої",
-                  icon: "ri-goblet-line",
-                  menuLink:
-                    "https://ukrainski-stravy.com.ua/wp-content/uploads/2025/03/cold-drinks.pdf",
-                },
-                {
-                  title: "Десерти",
-                  icon: "ri-cake-3-line",
-                  menuLink:
-                    "https://ukrainski-stravy.com.ua/wp-content/uploads/2025/03/desserts-ice.pdf",
-                },
-                {
-                  title: "Сніданки",
-                  icon: "ri-sun-line",
-                  menuLink:
-                    "https://ukrainski-stravy.com.ua/wp-content/uploads/2025/03/breakfasts.pdf",
-                },
-              ].map((category) => (
-                <div
-                  key={category.title}
-                  className="overflow-hidden rounded-lg border bg-white shadow-md"
-                >
-                  <Link
-                    className="flex h-48 items-center justify-center bg-gray-100"
-                    href={category.menuLink}
-                    target="_blank"
-                  >
-                    <div className="text-center">
-                      <i
-                        className={`${category.icon} mb-2 text-6xl text-gray-400`}
-                      />
-                      <p className="text-lg font-semibold text-gray-600">
-                        {category.title}
-                      </p>
-                    </div>
-                  </Link>
-                  <div className="p-4">
-                    <p className="text-center text-sm text-gray-600">
-                      Зателефонуйте для ознайомлення з повним меню
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Переваги */}
-          <div className="rounded-lg border bg-white p-8 shadow-md">
-            <h3 className="mb-6 text-2xl font-semibold text-gray-800">
-              Переваги доставки до номера
-            </h3>
-            <ul className="space-y-3">
-              <li className="flex items-start gap-3">
-                <i className="ri-check-double-line mt-1 text-xl text-green-600" />
-                <span className="text-gray-700">
-                  Швидка доставка протягом 30-45 хвилин
-                </span>
-              </li>
-              <li className="flex items-start gap-3">
-                <i className="ri-check-double-line mt-1 text-xl text-green-600" />
-                <span className="text-gray-700">
-                  Всі страви подаються в спеціальній упаковці для збереження
-                  тепла та свіжості
-                </span>
-              </li>
-              <li className="flex items-start gap-3">
-                <i className="ri-check-double-line mt-1 text-xl text-green-600" />
-                <span className="text-gray-700">
-                  Безкоштовна доставка для гостей готелю
-                </span>
-              </li>
-              <li className="flex items-start gap-3">
-                <i className="ri-check-double-line mt-1 text-xl text-green-600" />
-                <span className="text-gray-700">
-                  Доставка доступна щодня з 07:00 до 23:00
-                </span>
-              </li>
-              <li className="flex items-start gap-3">
-                <i className="ri-check-double-line mt-1 text-xl text-green-600" />
-                <span className="text-gray-700">
-                  Можливість оплати картою або готівкою
-                </span>
-              </li>
-            </ul>
-          </div>
-
-          <div className="text-center">
-            <p className="mb-4 text-lg text-gray-700">
-              Готові зробити замовлення?
-            </p>
-            <a
-              className="inline-flex items-center gap-2 rounded-lg bg-primary px-8 py-4 text-lg font-semibold text-white transition-all hover:bg-primary/90 hover:shadow-lg"
-              href="tel:+380661927167"
-            >
-              <i className="ri-phone-line text-xl" />
-              Зателефонувати для замовлення
-            </a>
-          </div>
         </div>
-      </Container>
+      </section>
     </>
   );
 }
