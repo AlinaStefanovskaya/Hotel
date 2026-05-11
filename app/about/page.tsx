@@ -77,32 +77,32 @@ const VALUES = [
 ];
 
 const TEAM = [
-  { name: "Олена Сергіївна", role: "Засновниця", image: "/images/about_2.png" },
+  { name: "Олена Сергіївна", role: "Засновниця", image: "/images/Olenka.jpg" },
   {
     name: "Володимир Андрійович",
     role: "Керівник готелю",
-    image: "/images/about_3.png",
+    image: "/images/Volodymyr.png",
   },
 
   {
     name: "Аліна Сергіївна",
     role: "Керівник гостьового досвіду",
-    image: "/images/about_4.png",
+    image: "/images/Alina.jpg",
   },
   {
     name: "Софія Антонівна",
     role: "Керівник ресторану",
-    image: "/images/about_4.png",
+    image: "/images/Conya.jpg",
   },
   {
     name: "Марат Вікторович",
     role: "Шеф-кухар",
-    image: "/images/restorant_1.jpg",
+    image: "/images/Marat.jpg",
   },
   {
     name: "Ольга Андріївна",
     role: "Адміністратор готелю",
-    image: "/images/about_4.png",
+    image: "/images/Olya.jpg",
   },
 ];
 
