@@ -77,20 +77,31 @@ const VALUES = [
 ];
 
 const TEAM = [
-  { name: "Анна Воля", role: "Засновниця", image: "/images/about_2.png" },
+  { name: "Олена Сергіївна", role: "Засновниця", image: "/images/about_2.png" },
   {
-    name: "Михайло Воля",
-    role: "Управляючий партнер",
+    name: "Володимир Андрійович",
+    role: "Керівник готелю",
     image: "/images/about_3.png",
   },
+
   {
-    name: "Олександр Молчанов",
+    name: "Аліна Сергіївна",
+    role: "Керівник гостьового досвіду",
+    image: "/images/about_4.png",
+  },
+  {
+    name: "Софія Антонівна",
+    role: "Керівник ресторану",
+    image: "/images/about_4.png",
+  },
+  {
+    name: "Марат Вікторович",
     role: "Шеф-кухар",
     image: "/images/restorant_1.jpg",
   },
   {
-    name: "Олена Карась",
-    role: "Head of Guest Experience",
+    name: "Ольга Андріївна",
+    role: "Адміністратор готелю",
     image: "/images/about_4.png",
   },
 ];
@@ -100,8 +111,8 @@ export default function AboutPage() {
     <main className="bg-[#FAF8F4]">
       {/* PageHero — ОРИГІНАЛЬНИЙ, не чіпаємо */}
       <PageHero
-        crumbs={[{ label: "Головна", href: "/" }, { label: "Про Volya Hotel" }]}
-        description="Бутик-готель у самому серці Аркадії, де приморська Одеса зустрічається з європейським комфортом."
+        crumbs={[{ label: "Головна", href: "/" }, { label: "Про Нас" }]}
+        description="Готель у самому серці Аркадії, де приморська Одеса зустрічається з європейським комфортом."
         image={designImages.aboutHero}
         title="Про Volya Hotel"
       />
@@ -111,20 +122,16 @@ export default function AboutPage() {
         <div className="mx-auto max-w-3xl text-center">
           <p className="font-display text-2xl leading-relaxed text-[#1A1A2E] sm:text-3xl md:text-4xl">
             Ми не намагаємось бути{" "}
-            <span className="font-display italic text-[#C9A96E]">
-              найбільшими
-            </span>
-            . Ми намагаємось бути{" "}
-            <span className="font-display italic text-[#C9A96E]">
-              найуважнішими
-            </span>{" "}
+            <span className="font-display  text-[#C9A96E]">найбільшими</span>.
+            Ми намагаємось бути{" "}
+            <span className="font-display  text-[#C9A96E]">найуважнішими</span>{" "}
             — щоб кожен ваш приїзд відчувався як повернення додому, тільки
             кращим.
           </p>
           <div className="mt-8 flex items-center justify-center gap-3 text-sm text-[#1A1A2E]/60">
             <span className="h-px w-6 bg-[#1A1A2E]/20" />
             <span className="uppercase tracking-wider">
-              Анна Воля · засновниця
+              Олена Сергіївна · засновниця
             </span>
             <span className="h-px w-6 bg-[#1A1A2E]/20" />
           </div>
@@ -158,9 +165,7 @@ export default function AboutPage() {
           <div className="mb-16 text-center">
             <h2 className="font-display text-4xl text-[#1A1A2E] sm:text-5xl">
               Як починалась{" "}
-              <span className="font-display italic text-[#C9A96E]">
-                В.О.Л.Я.
-              </span>
+              <span className="font-display  text-[#C9A96E]">В.О.Л.Я.</span>
             </h2>
             <p className="mt-3 text-sm text-[#1A1A2E]/60">
               Чотирнадцять років шляху — від першого каменю до визнання
@@ -204,9 +209,7 @@ export default function AboutPage() {
           <div className="mb-12">
             <h2 className="max-w-2xl font-display text-4xl text-[#1A1A2E] sm:text-5xl">
               Чотири речі, які для нас{" "}
-              <span className="font-display italic text-[#C9A96E]">
-                принципові
-              </span>
+              <span className="font-display  text-[#C9A96E]">принципові</span>
             </h2>
           </div>
 
@@ -238,22 +241,20 @@ export default function AboutPage() {
       {/* Team */}
       <section className="px-4 py-24">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-12">
+          <div className="mb-12 text-center">
             <h2 className="font-display text-4xl text-[#1A1A2E] sm:text-5xl">
               Команда, яку ви{" "}
-              <span className="font-display italic text-[#C9A96E]">
-                зустрінете
-              </span>
+              <span className="font-display  text-[#C9A96E]">зустрінете</span>
             </h2>
-            <p className="mt-3 max-w-xl text-sm text-[#1A1A2E]/60">
+            <p className="mx-auto mt-3 max-w-xl text-sm text-[#1A1A2E]/60">
               Невелика команда — кожен бачить себе власником справи. Тут немає
               байдужих.
             </p>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="relative left-1/2 grid w-[min(1800px,calc(100vw-2rem))] -translate-x-1/2 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
             {TEAM.map((m) => (
-              <div key={m.name} className="group">
+              <div key={m.name} className="group text-center">
                 <div className="relative mb-4 aspect-[3/4] overflow-hidden rounded-2xl bg-[#EFEAE0]">
                   <Image
                     fill
@@ -286,7 +287,7 @@ export default function AboutPage() {
                 alt="Одеська обл., бухта"
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"
-                src="/images/about_5.png"
+                src="/images/resort.jpg"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A2E]/90 via-[#1A1A2E]/30 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-8">
@@ -322,7 +323,7 @@ export default function AboutPage() {
             </div>
             <h3 className="mb-3 font-display text-3xl text-[#1A1A2E]">
               Reception{" "}
-              <span className="font-display italic text-[#C9A96E]">24/7</span>
+              <span className="font-display  text-[#C9A96E]">24/7</span>
             </h3>
             <p className="mb-8 text-sm text-[#1A1A2E]/60">
               Ви говорите з менеджером готелю напряму 24 години — і ніколи з
@@ -346,7 +347,7 @@ export default function AboutPage() {
                 last
                 icon={MapPin}
                 label="Адреса"
-                value="Одеса, Україна"
+                value="вул. Аркадія, Ліве крило 2/1, Одеса, Україна"
               />
             </div>
 

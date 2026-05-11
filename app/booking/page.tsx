@@ -46,7 +46,6 @@ export default function BookingPage() {
       <PageHero
         crumbs={[{ label: "Головна", href: "/" }, { label: "Бронювання" }]}
         description="Оберіть дати, тип номера й кількість гостей. Ми підтвердимо бронювання протягом години."
-        eyebrow="Booking & Contacts"
         image={designImages.contactsHero}
         title="Забронювати номер"
       />

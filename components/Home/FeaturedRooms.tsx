@@ -23,10 +23,7 @@ export default async function FeaturedRooms() {
               </span>
             </div>
             <h2 className="text-[44px] md:text-[52px] text-[#1A1A2E] font-semibold leading-[1.05] tracking-[-0.02em]">
-              Номери та{" "}
-              <span className="font-display italic font-normal">
-                апартаменти
-              </span>
+              Номери та <span>апартаменти</span>
             </h2>
             <p className="text-[14px] text-[#9090AA] mt-4 max-w-[480px] leading-relaxed">
               Сучасні номери та апартаменти на будь-який смак

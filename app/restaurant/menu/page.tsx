@@ -15,50 +15,44 @@ export const metadata: Metadata = {
 
 const dishes = [
   {
-    badge: "Сезонне",
     name: "Бограч по-закарпатськи",
     description:
       "Густий гуляш на відкритому вогні з телятиною, паприкою та галушками.",
     price: "320 ₴",
-    image: "/images/restorant_2.jpg",
+    image: "/images/dish_1.jpg",
   },
   {
-    badge: "Хіт шефа",
     name: "Форель з гірського потоку",
     description: "Запечена ціла форель з лимоном, тим’яном і картоплею-бейбі.",
     price: "480 ₴",
-    image: "/images/restorant_3.jpg",
+    image: "/images/dish_2.jpg",
   },
   {
-    badge: "Локальне",
     name: "Деруни з білими грибами",
     description:
       "Картопляні деруни з карпатськими білими грибами та домашньою сметаною.",
     price: "260 ₴",
-    image: "/images/restorant_4.jpg",
+    image: "/images/dish_3.jpg",
   },
   {
-    badge: "Вегетаріанське",
     name: "Бринзяні налисники",
-    description: "Тонкі млинці з овечою бринзою, шпинатом та горіховим соусом.",
+    description: "Тонкі млинці з бринзою, шпинатом та горіховим соусом.",
     price: "240 ₴",
-    image: "/images/restorant_5.jpg",
+    image: "/images/dish_5.jpg",
   },
   {
-    badge: "Гриль",
     name: "Шашлик із ягнятини",
     description:
       "Маринована ягнятина на вугіллі з печеними овочами та ткемалі.",
     price: "420 ₴",
-    image: "/images/restorant_1.jpg",
+    image: "/images/dish_6.jpg",
   },
   {
-    badge: "Десерт",
     name: "Медівник «Воля»",
     description:
       "Багатошаровий медовий торт за родинним рецептом з кремом маскарпоне.",
     price: "180 ₴",
-    image: "/images/restorant_5.jpg",
+    image: "/images/dish_4.jpg",
   },
 ];
 
@@ -98,8 +92,8 @@ export default function MenuPage() {
           { label: "Ресторан", href: "/restaurant" },
           { label: "Меню" },
         ]}
-        description="Сезонна карпатська кухня з локальних продуктів. Понад 80 позицій вин та авторські страви від шефа."
-        image="/images/restorant_3.jpg"
+        description="Сучасна одеська кухня, натхненна морем, південними смаками та локальними традиціями. Добірна винна карта й авторські страви від шефа."
+        image="/images/menu.jpg"
         title="Меню"
       />
 
@@ -126,9 +120,6 @@ export default function MenuPage() {
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     src={dish.image}
                   />
-                  <span className="absolute top-3 left-3 bg-primary text-primary-foreground text-xs uppercase tracking-wider px-3 py-1 rounded-full">
-                    {dish.badge}
-                  </span>
                 </div>
                 <div className="p-6">
                   <h3 className="font-serif text-xl mb-2">{dish.name}</h3>
@@ -155,7 +146,6 @@ export default function MenuPage() {
             <div>
               <SectionHeader
                 align="left"
-                description="Завантажте повне меню у PDF або перегляньте категорії онлайн."
                 eyebrow="Повне меню"
                 title="Категорії та PDF"
               />
@@ -188,7 +178,7 @@ export default function MenuPage() {
                 alt="Меню ресторану Воля"
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"
-                src="/images/restorant_4.jpg"
+                src="/images/restorant_4.png"
               />
             </div>
           </div>
@@ -199,13 +189,8 @@ export default function MenuPage() {
       <section className="bg-[#FAF8F4] px-6 py-20 lg:py-28">
         <div className="mx-auto grid max-w-[1320px] gap-8 lg:grid-cols-2">
           <div className="rounded-[28px] bg-[#1A1A2E] p-10 text-white md:p-14">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.36em] text-[#C9A96E]">
-              Замовлення столику
-            </p>
-
             <h2 className="mt-6 font-display text-4xl font-semibold leading-tight md:text-5xl">
-              Зарезервувати{" "}
-              <span className="font-display italic text-[#E8C98A]">столик</span>
+              Зарезервувати столик
             </h2>
 
             <p className="mt-5 max-w-md text-sm leading-relaxed text-white/70">
@@ -223,15 +208,8 @@ export default function MenuPage() {
           </div>
 
           <div className="rounded-[28px] border border-[#EFEAE0] bg-white p-10 md:p-14">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.36em] text-[#C9A96E]">
-              In-room dining
-            </p>
-
-            <h2 className="mt-6 font-display text-4xl font-semibold leading-tight text-[#1A1A2E] md:text-5xl">
-              Доставка в{" "}
-              <span className="font-display italic font-normal text-[#1A1A2E]">
-                номер
-              </span>
+            <h2 className="mt-6 font-display text-4xl font-semibold leading-tight md:text-5xl">
+              Доставка страв у номер
             </h2>
 
             <p className="mt-5 max-w-md text-sm leading-relaxed text-[#9090AA]">

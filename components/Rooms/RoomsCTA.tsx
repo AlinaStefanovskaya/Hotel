@@ -12,11 +12,7 @@ export default function RoomsCTA() {
               Не визначились?
             </span>
             <h3 className="text-[36px] md:text-[44px] text-white font-semibold mt-4 leading-tight max-w-[560px] mx-auto">
-              Допоможемо обрати{" "}
-              <span className="font-display italic font-normal text-[#E8C98A]">
-                ідеальний
-              </span>{" "}
-              номер
+              Допоможемо обрати <span>ідеальний</span> номер
             </h3>
             <p className="text-[14px] text-white/65 mt-4 max-w-[480px] mx-auto leading-relaxed">
               Зателефонуйте, опишіть подію — і ми підберемо номер під ваші дати,

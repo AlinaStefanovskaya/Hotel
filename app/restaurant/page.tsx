@@ -21,36 +21,32 @@ const stats = [
 
 const dishes = [
   {
-    badge: "Сезонне",
     name: "Бограч по-закарпатськи",
     description:
       "Густий гуляш на відкритому вогні з телятиною, паприкою та домашніми галушками.",
     price: "320 ₴",
-    image: "/images/restorant_2.jpg",
+    image: "/images/dish_1.jpg",
   },
   {
-    badge: "Хіт шефа",
     name: "Форель з гірського потоку",
     description:
       "Запечена ціла форель з лимоном, тим’яном і картоплею-бейбі на грилі.",
     price: "480 ₴",
-    image: "/images/restorant_3.jpg",
+    image: "/images/dish_2.jpg",
   },
   {
-    badge: "Локальне",
     name: "Деруни з білими грибами",
     description:
       "Картопляні деруни з карпатськими білими грибами та сметаною з домашнього сиру.",
     price: "260 ₴",
-    image: "/images/restorant_4.jpg",
+    image: "/images/dish_3.jpg",
   },
   {
-    badge: "Десерт",
     name: "Медівник «Воля»",
     description:
       "Багатошаровий медовий торт за родинним рецептом з кремом маскарпоне.",
     price: "180 ₴",
-    image: "/images/restorant_5.jpg",
+    image: "/images/dish_4.jpg",
   },
 ];
 
@@ -73,18 +69,24 @@ export default function RestaurantPage() {
                 Наша філософія
               </span>
               <h2 className="font-serif text-4xl lg:text-5xl mt-4 mb-6 leading-tight">
-                Кухня, що розповідає історію місця
+                Смак Одеси в кожній страві
               </h2>
               <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-                Ми готуємо з того, що росте поруч. Овочі — з городів сусідніх
-                сіл, сир — з полонин, форель — з гірських потоків. Кожна страва
-                — це про Карпати, про сезон і про людей, які вклали в неї працю.
+                Ми створили ресторан, у якому поєднуються одеська гостинність,
+                сучасна кухня та атмосфера відпочинку біля моря. Для нас
+                важливо, щоб кожна страва була не просто смачною, а передавала
+                настрій міста — легкий, теплий і трохи святковий.
               </p>
-              <p className="text-lg text-muted-foreground leading-relaxed mb-10">
-                Меню змінюється чотири рази на рік — слідом за тим, що дозріло
-                на полі чи в лісі.
+              <p className="text-lg text-muted-foreground leading-relaxed mb-6">
+                У меню ви знайдете страви, натхненні південними смаками,
+                морськими мотивами та локальними традиціями. Ми приділяємо увагу
+                якості продуктів, подачі та деталям, щоб кожен сніданок, обід чи
+                вечеря залишали приємне враження.
               </p>
-
+              <p className="text-lg text-muted-foreground leading-relaxed mb-6">
+                Наш ресторан — це місце для спокійного ранку, затишної вечері,
+                зустрічі з близькими або красивого завершення дня в Одесі.
+              </p>
               <div className="grid grid-cols-3 gap-6 pt-8 border-t border-border">
                 {stats.map((s) => (
                   <div key={s.label}>
@@ -106,8 +108,20 @@ export default function RestaurantPage() {
                   alt="Інтер'єр ресторану Воля"
                   className="object-cover"
                   sizes="(max-width: 1024px) 100vw, 50vw"
-                  src="/images/restorant_2.jpg"
+                  src="/images/restorant_2.png"
                 />
+                <div className="absolute bottom-6 left-6 right-6 z-20">
+                  <div className="flex items-center gap-4 rounded-[24px] bg-white/95 px-6 py-5 shadow-xl">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#f5f1e8] text-[#c8a96b] text-xl">
+                      ✦
+                    </div>
+                    <div>
+                      <p className=" text-[18px] text-[#2f3441]">
+                        Інтер&apos;єр ресторану Воля
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -137,9 +151,6 @@ export default function RestaurantPage() {
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                     src={dish.image}
                   />
-                  <span className="absolute top-3 left-3 bg-primary text-primary-foreground text-xs uppercase tracking-wider px-3 py-1 rounded-full">
-                    {dish.badge}
-                  </span>
                 </div>
                 <div className="p-5">
                   <h3 className="font-serif text-xl mb-2">{dish.name}</h3>
@@ -180,7 +191,7 @@ export default function RestaurantPage() {
                   alt=""
                   className="object-cover"
                   sizes="(max-width: 1024px) 100vw, 66vw"
-                  src="/images/restorant_4.jpg"
+                  src="/images/restvine.jpg"
                 />
               </div>
               <div className="relative z-10 max-w-xl">
@@ -249,9 +260,9 @@ export default function RestaurantPage() {
                 <MapPin className="w-8 h-8 text-primary mb-4" />
                 <h4 className="font-serif text-xl mb-2">Адреса</h4>
                 <p className="text-sm text-muted-foreground">
-                  с. Поляна, Свалявський р-н,
+                  вул. Аркадія, Ліве крило 2/1, Одеса
                   <br />
-                  Закарпатська область
+                  Одеська область
                 </p>
               </div>
             </div>

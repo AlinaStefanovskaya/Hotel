@@ -28,14 +28,10 @@ export default function SplitCTA() {
                 Доступніше бронювання
               </span>
               <h3 className="text-[34px] text-white font-semibold mt-7 leading-tight">
-                Ресторан{" "}
-                <span className="font-display italic font-normal">
-                  при готелі
-                </span>
+                Ресторан <span>при готелі</span>
               </h3>
               <p className="text-[14px] text-white/70 mt-3 max-w-[360px] leading-relaxed">
                 Авторська кухня шеф-кухаря, локальні продукти, винна карта.
-                Щовечора з 18:00.
               </p>
               <div className="mt-6">
                 <GoldLink light>Меню та бронь столика</GoldLink>
@@ -62,8 +58,7 @@ export default function SplitCTA() {
                 Наші цінності
               </span>
               <h3 className="text-[34px] text-white font-semibold mt-7 leading-tight">
-                Про готель{" "}
-                <span className="font-display italic font-normal">Volya</span>
+                Про готель <span>Volya</span>
               </h3>
               <p className="text-[14px] text-white/70 mt-3 max-w-[360px] leading-relaxed">
                 Ми створили простір, де цінують деталі — від дизайну інтер’єру

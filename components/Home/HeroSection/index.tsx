@@ -19,9 +19,7 @@ export default function HeroSection() {
           <h1 className="text-[52px] md:text-[64px] font-semibold leading-[1.05] tracking-[-0.02em]">
             Відчуйте
             <br />
-            <span className="font-display italic font-normal text-[#E8C98A]">
-              особливий
-            </span>
+            <span>особливий</span>
             <br />
             комфорт
           </h1>

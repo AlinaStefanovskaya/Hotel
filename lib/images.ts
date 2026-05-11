@@ -12,8 +12,8 @@ export const aboutImages = {
 
 export const restaurantImages = [
   "/images/restorant_1.jpg",
-  "/images/restorant_2.jpg",
-  "/images/restorant_3.jpg",
-  "/images/restorant_4.jpg",
-  "/images/restorant_5.jpg",
+  "/images/restorant_2.png",
+  "/images/restorant_3.png",
+  "/images/restorant_4.png",
+  "/images/restorant_5.png",
 ] as const;

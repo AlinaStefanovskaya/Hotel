@@ -88,10 +88,8 @@ export default async function RoomsPage(props: {
   return (
     <main className="min-h-dvh bg-[#FAF8F4]">
       <PageHero
-        description="Авторські номери — від камерних studios до просторих сюїт. Кожен зі своїм характером, але з єдиною турботою про деталі."
-        eyebrow="Stay with us"
+        description="Авторські номери — кожен зі своїм характером, але з єдиною турботою про деталі."
         image={HERO_IMAGE}
-        italicWord="апартаменти"
         title="Номери та апартаменти"
       />
 

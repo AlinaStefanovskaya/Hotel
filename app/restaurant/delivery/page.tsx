@@ -75,7 +75,7 @@ export default function DeliveryPage() {
           { label: "Доставка" },
         ]}
         description="Замовляйте страви ресторану прямо до номера."
-        image="/images/restorant_2.jpg"
+        image="/images/room-service.jpg"
         title="Доставка"
       />
 
@@ -188,7 +188,7 @@ export default function DeliveryPage() {
                 alt="Доставка страв у номер"
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"
-                src="/images/restorant_5.jpg"
+                src="/images/room-service.jpg"
               />
             </div>
 

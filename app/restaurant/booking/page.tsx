@@ -170,9 +170,7 @@ export default function RestaurantBookingPage() {
           { label: "Бронь столика" },
         ]}
         description="Камерний зал на 14 столиків та тераса з виглядом на бухту. Бронюйте за 4+ години, у вихідні рекомендуємо за 1–2 дні."
-        eyebrow="Нововведення"
         image={designImages.restaurantHero ?? "/images/restorant_1.jpg"}
-        italicWord="столика"
         title="Бронь столика"
       />
 
@@ -270,7 +268,7 @@ export default function RestaurantBookingPage() {
                   <Field
                     optional
                     error={err.email}
-                    label="Email (необовʼязково)"
+                    label="Email "
                     placeholder="you@example.com"
                     type="email"
                     value={email}
@@ -278,7 +276,7 @@ export default function RestaurantBookingPage() {
                   />
                   <Field
                     optional
-                    label="Побажання (необовʼязково)"
+                    label="Побажання "
                     placeholder="Тихий столик біля вікна"
                     value={notes}
                     onChange={setNotes}
@@ -326,8 +324,13 @@ export default function RestaurantBookingPage() {
                   label="Reception"
                   value="+380 66 192 71 67"
                 />
-                <ContactRow icon={Clock} label="Кухня" value="08:00 — 23:00" />
-                <ContactRow last icon={MapPin} label="Адреса" value="Одеса" />
+                <ContactRow icon={Clock} label="Кухня" value="07:00 — 23:00" />
+                <ContactRow
+                  last
+                  icon={MapPin}
+                  label="Адреса"
+                  value="вул. Аркадія, Ліве крило 2/1, Одеса"
+                />
 
                 <Link
                   className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[#1A1A2E] transition-colors hover:text-[#C9A96E]"
